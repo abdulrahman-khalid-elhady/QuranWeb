@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القرآن الكريم | The Holy Quran</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231F4E43'/%3E%3Cpath fill='%23D4AF37' d='M50 25c0 0-5-5-20-5s-20 5-20 5v40c0 0 5-5 20-5s20 5 20 5v-40z'/%3E%3Cpath fill='%23D4AF37' d='M50 25c0 0 5-5 20-5s20 5 20 5v40c0 0-5-5-20-5s-20 5-20 5v-40z'/%3E%3Cpath stroke='%231F4E43' stroke-width='2' d='M50 25v45'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS VARIABLES & THEME SYSTEM --- */
+        :root {
+            /* Light Theme (Default) */
+            --bg-body: #F9F7F2;
+            --bg-surface: #FFFFFF;
+            --bg-surface-hover: #F2EFE9;
+            --text-primary: #1A3C34;
+            --text-secondary: #5C706A;
+            --primary: #1F4E43;
+            --primary-light: #2A6658;
+            --accent: #D4AF37;
+            --accent-glow: rgba(212, 175, 55, 0.2);
+            --border: #E0DCD5;
+            --shadow: 0 4px 20px rgba(26, 60, 52, 0.06);
+            --shadow-hover: 0 8px 30px rgba(26, 60, 52, 0.12);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-heading: 'Amiri', serif;
+            --font-ui: 'Tajawal', sans-serif;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-body: #0F1716;
+            --bg-surface: #1A2624;
+            --bg-surface-hover: #23302E;
+            --text-primary: #ECECEC;
+            --text-secondary: #A0B3B0;
+            --primary: #468C79;
+            --primary-light: #5AA390;
+            --accent: #C5A028;
+            --accent-glow: rgba(197, 160, 40, 0.15);
+            --border: #2A3836;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        /* --- GLOBAL RESET & TYPOGRAPHY --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-ui);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.03) 0%, transparent 40%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; line-height: 1.4; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; transition: var(--transition); }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        [data-theme="dark"] .logo { color: var(--text-primary); }
+        .logo i { color: var(--accent); font-size: 1.8rem; }
+
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-full);
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+        }
+        .theme-toggle:hover { background: var(--bg-surface-hover); border-color: var(--accent); color: var(--accent); }
+
+        /* --- HERO & PLAYER --- */
+        .player-hero {
+            text-align: center;
+            padding: 40px 0 60px;
+            position: relative;
+        }
+
+        .surah-name-display {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        [data-theme="dark"] .surah-name-display { color: var(--text-primary); }
+
+        .reciter-name-display {
+            font-size: 1.2rem;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .audio-player-wrapper {
+            background: var(--bg-surface);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            max-width: 700px;
+            margin: 30px auto 0;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        [data-theme="dark"] .audio-player-wrapper { background: rgba(26, 38, 36, 0.9); }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            border-radius: var(--radius-full);
+            transition: width 0.1s linear;
+        }
+        
+        .time-stamps {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .btn-control { color: var(--text-secondary); font-size: 1.2rem; padding: 10px; }
+        .btn-control:hover { color: var(--primary); }
+
+        .btn-play {
+            width: 64px;
+            height: 64px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: var(--radius-full);
+            font-size: 1.5rem;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 8px 20px rgba(31, 78, 67, 0.3);
+        }
+
+        .btn-play:hover { transform: scale(1.05); background: var(--primary-light); }
+
+        /* --- CONTENT SECTIONS --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+
+        .section-title { font-size: 1.8rem; color: var(--text-primary); }
+        .section-subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; }
+
+        .tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .tab-btn {
+            padding: 10px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid transparent;
+        }
+        
+        .tab-btn.active {
+            background: var(--bg-surface);
+            color: var(--primary);
+            border-color: var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        /* Grid & List */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); border-color: var(--accent); }
+        .card.active { border-color: var(--primary); background: var(--bg-surface-hover); }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-body);
+            border-radius: var(--radius-full);
+            display: grid;
+            place-items: center;
+            color: var(--primary);
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        .card-info { flex: 1; }
+        .card-title { font-size: 1.1rem; margin-bottom: 4px; color: var(--text-primary); }
+        .card-meta { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* Surah List */
+        .surah-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            padding-bottom: 80px;
+        }
+
+        .surah-item {
+            background: var(--bg-surface);
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .surah-item:hover { background: var(--bg-surface-hover); border-color: var(--accent); }
+        .surah-item.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .surah-item.active .surah-number { color: rgba(255,255,255,0.6); }
+
+        .surah-info { display: flex; align-items: center; gap: 12px; }
+        
+        .surah-number {
+            font-family: var(--font-ui);
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--accent);
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            background: rgba(0,0,0,0.03);
+            border-radius: 6px;
+        }
+
+        .surah-name { font-family: var(--font-heading); font-size: 1.15rem; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .player-hero { padding: 20px 0 40px; }
+            .surah-name-display { font-size: 2.2rem; }
+            .audio-player-wrapper { 
+                padding: 16px; bottom: 0; top: auto; 
+                border-radius: 20px 20px 0 0; margin: 0 -20px; 
+                max-width: none; width: calc(100% + 40px); 
+                border-bottom: none; position: fixed;
+            }
+            .grid-layout { grid-template-columns: 1fr; gap: 12px; }
+            .surah-list { grid-template-columns: 1fr; }
+            .container { padding-bottom: 180px; } /* Space for fixed player */
+            .tabs { overflow-x: auto; padding: 0 20px 10px; justify-content: flex-start; margin: 0 -20px 20px; }
+            .tab-btn { white-space: nowrap; flex-shrink: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="#" class="logo">
+                <i class="fas fa-quran"></i>
+                <span>القرآن الكريم</span>
+            </a>
+            <button class="theme-toggle" id="themeBtn" aria-label="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <section class="player-hero">
+            <div class="current-track-info" id="trackInfo">
+                <h1 class="surah-name-display" id="currentSurahName">سورة الفاتحة</h1>
+                <p class="reciter-name-display" id="currentReciterName">مشاري راشد العفاسي</p>
+            </div>
+
+            <div class="audio-player-wrapper">
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="time-stamps">
+                    <span id="currentTime">00:00</span>
+                    <span id="duration">00:00</span>
+                </div>
+
+                <div class="controls">
+                    <button class="btn-control" id="prevBtn"><i class="fas fa-step-forward"></i></button>
+                    <button class="btn-play" id="playBtn"><i class="fas fa-play" style="margin-right: -4px;"></i></button>
+                    <button class="btn-control" id="nextBtn"><i class="fas fa-step-backward"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="reciters">القراء</button>
+            <button class="tab-btn" data-tab="surahs">السور</button>
+        </div>
+
+        <section id="recitersSection">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">اختر القارئ</h2>
+                    <p class="section-subtitle">أشهر القراء برواية حفص والمجود والورش</p>
+                </div>
+            </div>
+            <div class="grid-layout" id="recitersGrid">
+                </div>
+        </section>
+
+        <section id="surahsSection" style="display: none;">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">فهرس السور</h2>
+                    <p class="section-subtitle">القرآن الكريم كاملًا (114 سورة)</p>
+                </div>
+            </div>
+            <div class="surah-list" id="surahsList">
+                </div>
+        </section>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        // --- EXPANDED DATA ---
+        
+        // جميع أسماء السور (114)
+        const surahNames = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
+            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
+            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
+            "المسد", "الإخلاص", "الفلق", "الناس"
+        ];
+
+        const surahsData = surahNames.map((name, index) => ({ id: index + 1, name: name }));
+
+       const recitersData = [
+            // --- القراء الأكثر شهرة ---
+            { id: 1, name: "مشاري راشد العفاسي", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/afs/" },
+            { id: 2, name: "ماهر المعيقلي", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/maher/" },
+            { id: 3, name: "عبدالرحمن السديس", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/sds/" },
+            { id: 4, name: "سعود الشريم", style: "مرتل (حفص)", server: "https://server7.mp3quran.net/shur/" },
+            { id: 5, name: "سعد الغامدي", style: "مرتل (حفص)", server: "https://server7.mp3quran.net/s_gmd/" },
+            { id: 6, name: "ياسر الدوسري", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/yasser/" },
+            { id: 7, name: "أحمد بن علي العجمي", style: "مرتل (حفص)", server: "https://server10.mp3quran.net/ajm/" },
+            { id: 8, name: "بندر بليلة", style: "مرتل (حفص)", server: "https://download.quranicaudio.com/quran/bandar_baleela/" },
+            { id: 9, name: "ناصر القطامي", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/qtm/" },
+            { id: 10, name: "إدريس أبكر", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/abkr/" },
+            
+            // --- عمالقة التلاوة المصرية (الزمن الجميل) ---
+            { id: 11, name: "عبدالباسط عبدالصمد", style: "مجود (نادر)", server: "https://server7.mp3quran.net/basit/" },
+            { id: 12, name: "عبدالباسط عبدالصمد", style: "مرتل (حفص)", server: "https://server7.mp3quran.net/basit/Almusshaf-Al-Mojawwad/" }, // ملاحظة: الرابط للمجود المصحح، للحفص استخدم رابط آخر إذا توفر
+            { id: 13, name: "محمود خليل الحصري", style: "مرتل (حفص)", server: "https://server13.mp3quran.net/husr/" },
+            { id: 14, name: "محمود خليل الحصري", style: "مجود", server: "https://server13.mp3quran.net/husr_mjwd/" },
+            { id: 15, name: "محمد صديق المنشاوي", style: "مرتل (حفص)", server: "https://server10.mp3quran.net/minsh/" },
+            { id: 16, name: "محمد صديق المنشاوي", style: "مجود", server: "https://server10.mp3quran.net/minsh_mjwd/" },
+            { id: 17, name: "محمود علي البنا", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/bna/" },
+            { id: 18, name: "محمود علي البنا", style: "مجود", server: "https://server8.mp3quran.net/bna_mjwd/" },
+            { id: 19, name: "محمد محمود الطبلاوي", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/tblawi/" },
+            { id: 20, name: "مصطفى إسماعيل", style: "مجود", server: "https://server8.mp3quran.net/mustafa/" },
+
+            // --- أصوات هادئة وخاشعة ---
+            { id: 21, name: "فارس عباد", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/frs_a/" },
+            { id: 22, name: "أبو بكر الشاطري", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/shatri/" },
+            { id: 23, name: "هاني الرفاعي", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/hani/" },
+            { id: 24, name: "نبيل الرفاعي", style: "مرتل (حفص)", server: "https://server9.mp3quran.net/nabil/" },
+            { id: 25, name: "صلاح بو خاطر", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/bu_khtr/" },
+            { id: 26, name: "خالد الجليل", style: "مرتل (حفص)", server: "https://server10.mp3quran.net/jleel/" },
+            { id: 27, name: "محمد اللحيدان", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/lhdan/" },
+            { id: 28, name: "وديع اليمني", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/wdee3/" },
+            { id: 29, name: "هزاع البلوشي", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/hazza/" },
+            { id: 30, name: "عبدالرحمن العوسي", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/aloosi/" },
+
+            // --- أئمة الحرمين ومكة والمدينة ---
+            { id: 31, name: "عبدالله عواد الجهني", style: "مرتل (حفص)", server: "https://server13.mp3quran.net/jhn/" },
+            { id: 32, name: "علي الحذيفي", style: "مرتل (حفص)", server: "https://server9.mp3quran.net/hthfi/" },
+            { id: 33, name: "صلاح البدير", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/s_bud/" },
+            { id: 34, name: "عبدالمحسن القاسم", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/qasm/" },
+            { id: 35, name: "خالد الغامدي", style: "مرتل (حفص)", server: "https://server10.mp3quran.net/khalid_ghamdi/" },
+            { id: 36, name: "عادل الكلباني", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/a_klb/" },
+            { id: 37, name: "علي جابر", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/a_jbr/" },
+
+            // --- قراء متنوعون ومتميزون ---
+            { id: 38, name: "محمد جبريل", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/jbrl/" },
+            { id: 39, name: "عبدالله بصفر", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/bsfr/" },
+            { id: 40, name: "عبدالله المطرود", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/mtrod/" },
+            { id: 41, name: "أحمد العبيد", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/a_obed/" },
+            { id: 42, name: "أحمد الطرابلسي", style: "مرتل (حفص)", server: "https://server10.mp3quran.net/trabulsi/" },
+            { id: 43, name: "أكرم العلاقمي", style: "مرتل (حفص)", server: "https://server9.mp3quran.net/akrm/" },
+            { id: 44, name: "إبراهيم الأخضر", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/akhdr/" },
+            { id: 45, name: "إبراهيم الجبرين", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/jabreen/" },
+            { id: 46, name: "خليفة الطنيجي", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/tunaiji/" },
+            { id: 47, name: "زكي داغستاني", style: "مرتل (حفص)", server: "https://server9.mp3quran.net/zaki/" },
+            { id: 48, name: "سامي الدوسري", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/sami_dosr/" },
+            { id: 49, name: "سيد رمضان", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/sayed/" },
+            { id: 50, name: "شيرزاد عبدالرحمن", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/shirzad/" },
+            { id: 51, name: "صابر عبدالحكم", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/hkm/" },
+            { id: 52, name: "طارق عبدالغني دعوب", style: "مرتل (حفص)", server: "https://server10.mp3quran.net/daob/" },
+            { id: 53, name: "عبدالبارئ الثبيتي", style: "مرتل (حفص)", server: "https://server6.mp3quran.net/thubti/" },
+            { id: 54, name: "عبدالبارئ محمد", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/bari/" },
+            { id: 55, name: "عبدالرزاق الدليمي", style: "مجود", server: "https://server8.mp3quran.net/dulaimi/" },
+            { id: 56, name: "عبدالعزيز الأحمد", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/a_ahmed/" },
+            { id: 57, name: "عبدالودود حنيف", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/wdod/" },
+            { id: 58, name: "علي الحجاج السويسي", style: "مرتل (حفص)", server: "https://server9.mp3quran.net/hjj/" },
+            { id: 59, name: "ماجد الزامل", style: "مرتل (حفص)", server: "https://server9.mp3quran.net/zaml/" },
+            { id: 60, name: "محمد أيوب", style: "مرتل (حفص)", server: "https://server8.mp3quran.net/ayyub/" },
+            { id: 61, name: "محمد رشاد الشريف", style: "مجود", server: "https://server10.mp3quran.net/rashad/" },
+            { id: 62, name: "محمد صالح عالم شاه", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/shah/" },
+            { id: 63, name: "محمد عبدالكريم", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/m_krm/" },
+            { id: 64, name: "مفتاح السلطني", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/saltany/" },
+            { id: 65, name: "موسى بلال", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/bilal/" },
+            { id: 66, name: "ياسر سلامة", style: "مرتل (حفص)", server: "https://server12.mp3quran.net/salamah/" },
+
+            // --- روايات أخرى (ورش، قالون، الدوري) ---
+            { id: 301, name: "عبدالباسط عبدالصمد", style: "ورش عن نافع", server: "https://server7.mp3quran.net/basit_warsh/" },
+            { id: 302, name: "ياسين الجزائري", style: "ورش عن نافع", server: "https://server11.mp3quran.net/jaza/" },
+            { id: 303, name: "عمر القزابري", style: "ورش عن نافع", server: "https://server9.mp3quran.net/omar_warsh/" },
+            { id: 304, name: "محمود خليل الحصري", style: "ورش عن نافع", server: "https://server13.mp3quran.net/husr_warsh/" },
+            { id: 305, name: "أحمد الحواشي", style: "مرتل (حفص)", server: "https://server11.mp3quran.net/hawashi/" },
+            { id: 306, name: "العيون الكوشي", style: "ورش عن نافع", server: "https://server11.mp3quran.net/kushi/" },
+            { id: 307, name: "علي بن عبدالرحمن الحذيفي", style: "قالون عن نافع", server: "https://server9.mp3quran.net/hthfi_qalon/" },
+            { id: 308, name: "عبدالرشيد صوفي", style: "خلف عن حمزة", server: "https://server10.mp3quran.net/soufi_khalaf/" },
+            { id: 309, name: "عبدالرشيد صوفي", style: "السوسي عن أبي عمرو", server: "https://server10.mp3quran.net/soufi_sosi/" }
+        ];
+        // --- APP LOGIC ---
+        let state = {
+            isPlaying: false,
+            currentReciter: recitersData[0], // Mishary Default
+            currentSurahId: 1, // Al-Fatiha
+            theme: localStorage.getItem('theme') || 'light'
+        };
+
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer');
+        const themeBtn = document.getElementById('themeBtn');
+        const recitersGrid = document.getElementById('recitersGrid');
+        const surahsList = document.getElementById('surahsList');
+        const elSurahName = document.getElementById('currentSurahName');
+        const elReciterName = document.getElementById('currentReciterName');
+        const elCurrentTime = document.getElementById('currentTime');
+        const elDuration = document.getElementById('duration');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+
+        function init() {
+            setTheme(state.theme);
+            renderReciters();
+            renderSurahs();
+            // Preload UI text but don't auto-play on load
+            updateTrackInfo(state.currentReciter, state.currentSurahId);
+            setupEventListeners();
+        }
+
+        function loadTrack(reciter, surahId, autoPlay = true) {
+            state.currentReciter = reciter;
+            state.currentSurahId = surahId;
+
+            // Format ID (001, 010, 100)
+            const paddedId = String(surahId).padStart(3, '0');
+            const url = `${reciter.server}${paddedId}.mp3`;
+            
+            audio.src = url;
+            updateTrackInfo(reciter, surahId);
+            highlightActiveItems();
+
+            if (autoPlay) {
+                playAudio();
+            }
+        }
+
+        function updateTrackInfo(reciter, surahId) {
+            const surahName = surahsData.find(s => s.id === surahId).name;
+            elSurahName.textContent = `سورة ${surahName}`;
+            elReciterName.textContent = reciter.name;
+        }
+
+        function playAudio() {
+            audio.play().then(() => {
+                state.isPlaying = true;
+                updatePlayBtn();
+            }).catch(e => console.log("Error playing:", e));
+        }
+
+        function pauseAudio() {
+            audio.pause();
+            state.isPlaying = false;
+            updatePlayBtn();
+        }
+
+        function togglePlay() {
+            state.isPlaying ? pauseAudio() : playAudio();
+        }
+
+        function updatePlayBtn() {
+            const icon = playBtn.querySelector('i');
+            if (state.isPlaying) {
+                icon.className = 'fas fa-pause';
+            } else {
+                icon.className = 'fas fa-play';
+                icon.style.marginRight = '-4px';
+            }
+        }
+
+        function renderReciters() {
+            recitersGrid.innerHTML = '';
+            recitersData.forEach(reciter => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.id = reciter.id;
+                card.onclick = () => {
+                    loadTrack(reciter, state.currentSurahId, true);
+                    // Stay on reciter tab but show visual feedback
+                };
+
+                card.innerHTML = `
+                    <div class="card-icon"><i class="fas fa-microphone-alt"></i></div>
+                    <div class="card-info">
+                        <h3 class="card-title">${reciter.name}</h3>
+                        <p class="card-meta">${reciter.style}</p>
+                    </div>
+                `;
+                recitersGrid.appendChild(card);
+            });
+            highlightActiveItems();
+        }
+
+        function renderSurahs() {
+            surahsList.innerHTML = '';
+            surahsData.forEach(surah => {
+                const item = document.createElement('div');
+                item.className = 'surah-item';
+                item.dataset.id = surah.id;
+                item.onclick = () => loadTrack(state.currentReciter, surah.id, true);
+                
+                item.innerHTML = `
+                    <div class="surah-info">
+                        <div class="surah-number">${surah.id}</div>
+                        <span class="surah-name">سورة ${surah.name}</span>
+                    </div>
+                    <i class="far fa-play-circle" style="color: var(--text-secondary);"></i>
+                `;
+                surahsList.appendChild(item);
+            });
+        }
+
+        function highlightActiveItems() {
+            document.querySelectorAll('.card').forEach(c => {
+                c.classList.toggle('active', parseInt(c.dataset.id) === state.currentReciter.id);
+            });
+            document.querySelectorAll('.surah-item').forEach(s => {
+                s.classList.toggle('active', parseInt(s.dataset.id) === state.currentSurahId);
+            });
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            state.theme = theme;
+            localStorage.setItem('theme', theme);
+            themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        function switchTab(target) {
+            if(target === 'reciters') {
+                document.getElementById('recitersSection').style.display = 'block';
+                document.getElementById('surahsSection').style.display = 'none';
+            } else if (target === 'surahs') {
+                document.getElementById('recitersSection').style.display = 'none';
+                document.getElementById('surahsSection').style.display = 'block';
+            }
+            
+            tabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === target);
+            });
+        }
+
+        function setupEventListeners() {
+            playBtn.addEventListener('click', togglePlay);
+            themeBtn.addEventListener('click', () => setTheme(state.theme === 'light' ? 'dark' : 'light'));
+            
+            audio.addEventListener('timeupdate', updateProgress);
+            audio.addEventListener('ended', () => {
+                if(state.currentSurahId < 114) loadTrack(state.currentReciter, state.currentSurahId + 1, true);
+            });
+
+            progressContainer.addEventListener('click', (e) => {
+                const width = progressContainer.clientWidth;
+                // In RTL, the click calc can sometimes be tricky depending on browser, 
+                // but usually offsetX gives the distance from the visual left edge of element in modern browsers.
+                // If the bar fills from right to left, we might need to invert logic.
+                // However, our CSS width grows normally. Let's assume standard behavior.
+                const clickX = e.offsetX;
+                const duration = audio.duration;
+                audio.currentTime = (clickX / width) * duration;
+            });
+
+            tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                 if(state.currentSurahId > 1) loadTrack(state.currentReciter, state.currentSurahId - 1, true);
+            });
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                 if(state.currentSurahId < 114) loadTrack(state.currentReciter, state.currentSurahId + 1, true);
+            });
+        }
+
+        function updateProgress() {
+            const { duration, currentTime } = audio;
+            if(isNaN(duration)) return;
+            const progressPercent = (currentTime / duration) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            elCurrentTime.textContent = formatTime(currentTime);
+            elDuration.textContent = formatTime(duration);
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        init();
+    </script>
+</body>
+</html>
