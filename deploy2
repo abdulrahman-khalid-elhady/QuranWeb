@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القرآن الكريم | The Holy Quran</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231F4E43'/%3E%3Cpath fill='%23D4AF37' d='M50 25c0 0-5-5-20-5s-20 5-20 5v40c0 0 5-5 20-5s20 5 20 5v-40z'/%3E%3Cpath fill='%23D4AF37' d='M50 25c0 0 5-5 20-5s20 5 20 5v40c0 0-5-5-20-5s-20 5-20 5v-40z'/%3E%3Cpath stroke='%231F4E43' stroke-width='2' d='M50 25v45'/%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- Original Variables (Restored) --- */
+        :root {
+            --bg-body: #F9F7F2;
+            --bg-surface: #FFFFFF;
+            --bg-surface-hover: #F2EFE9;
+            --text-primary: #1A3C34;
+            --text-secondary: #5C706A;
+            --primary: #1F4E43;
+            --primary-light: #2A6658;
+            --accent: #D4AF37;
+            --border: #E0DCD5;
+            --shadow: 0 4px 20px rgba(26, 60, 52, 0.06);
+            --shadow-hover: 0 8px 30px rgba(26, 60, 52, 0.12);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-heading: 'Amiri', serif;
+            --font-ui: 'Tajawal', sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0F1716;
+            --bg-surface: #1A2624;
+            --bg-surface-hover: #23302E;
+            --text-primary: #ECECEC;
+            --text-secondary: #A0B3B0;
+            --primary: #468C79;
+            --primary-light: #5AA390;
+            --accent: #C5A028;
+            --border: #2A3836;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        /* --- Global Reset --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-ui);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.5s ease;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.03) 0%, transparent 40%);
+        }
+
+        /* Pattern */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6z' fill='%23D4AF37' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: -1;
+        }
+
+        h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; transition: var(--transition); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- Header --- */
+        header {
+            display: flex; justify-content: space-between; align-items: center; padding: 24px 0;
+        }
+        .logo { font-family: var(--font-heading); font-size: 2rem; color: var(--primary); display: flex; align-items: center; gap: 12px; }
+        [data-theme="dark"] .logo { color: var(--text-primary); }
+        .logo i { color: var(--accent); }
+        .theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border); display: grid; place-items: center; color: var(--text-primary); }
+
+        /* --- Hero Player (Original Design) --- */
+        .player-hero { text-align: center; padding: 20px 0 40px; position: relative; }
+        .surah-name-display { font-size: 3.5rem; color: var(--primary); margin-bottom: 8px; text-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        [data-theme="dark"] .surah-name-display { color: var(--text-primary); }
+        .reciter-name-display { font-size: 1.2rem; color: var(--accent); opacity: 0.9; }
+
+        .audio-player-wrapper {
+            background: var(--bg-surface); padding: 24px; border-radius: var(--radius-lg);
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            max-width: 700px; margin: 30px auto 0;
+            position: sticky; top: 20px; z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        [data-theme="dark"] .audio-player-wrapper { background: rgba(26, 38, 36, 0.95); }
+
+        .progress-container {
+            width: 100%; height: 6px; background: var(--border); border-radius: var(--radius-full);
+            cursor: pointer; position: relative; margin-bottom: 20px; overflow: hidden;
+        }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; border-radius: var(--radius-full); transition: width 0.1s linear; }
+        .time-stamps { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px; }
+
+        .controls { display: flex; justify-content: center; align-items: center; gap: 24px; }
+        .btn-control { color: var(--text-secondary); font-size: 1.2rem; padding: 10px; }
+        .btn-control:hover { color: var(--primary); }
+        .btn-play {
+            width: 64px; height: 64px; background: var(--primary); color: #fff;
+            border-radius: 50%; font-size: 1.5rem; display: grid; place-items: center;
+            box-shadow: 0 8px 20px rgba(31, 78, 67, 0.3);
+        }
+        .btn-play:hover { transform: scale(1.05); background: var(--primary-light); }
+
+        /* --- Search Bar (Integrated nicely) --- */
+        .search-wrapper { max-width: 700px; margin: 0 auto 30px; }
+        .search-box {
+            width: 100%; padding: 12px 20px; border-radius: var(--radius-full);
+            border: 1px solid var(--border); background: var(--bg-surface);
+            font-family: var(--font-ui); font-size: 1rem; color: var(--text-primary);
+            outline: none; transition: var(--transition);
+        }
+        .search-box:focus { border-color: var(--accent); box-shadow: var(--shadow); }
+
+        /* --- Tabs --- */
+        .tabs { display: flex; gap: 20px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap;}
+        .tab-btn { padding: 10px 24px; border-radius: var(--radius-full); font-weight: 500; color: var(--text-secondary); border: 1px solid transparent; }
+        .tab-btn.active { background: var(--bg-surface); color: var(--primary); border-color: var(--border); box-shadow: var(--shadow); }
+
+        /* --- Grid & Cards --- */
+        .grid-layout {
+    display: grid; /* نرجع لنظام الشبكة */
+    /* الكود ده هو السحر: بيخلي الكروت تترص جنب بعض حسب مساحة الشاشة */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 20px; /* المسافة بين الكروت */
+    margin-bottom: 60px;
+    padding-bottom: 0; /* مش محتاجين مسافة للسكرول بار خلاص */
+    overflow-x: visible; /* نلغي السكرول الجانبي */
+}
+        
+.card {
+    /* الخواص دي هي اللي هتمنع التداخل */
+    flex: 0 0 300px;      /* 0 تعني لا تكبر، 0 الثانية تعني لا تصغر، 300px هو العرض الثابت */
+    width: 300px;         /* تأكيد على العرض */
+    margin-left: 15px;    /* إضافة مسافة يدوية (أمان) بدلاً من الاعتماد الكلي على gap */
+    
+    /* باقي التنسيقات زي ما هي */
+    background: var(--bg-surface);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    position: relative;
+}
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); border-color: var(--accent); }
+        .card.active { border-color: var(--primary); background: var(--bg-surface-hover); }
+
+        /* Original Icon Style Restored */
+        .card-icon {
+            width: 50px; height: 50px; background: var(--bg-body); border-radius: 50%;
+            display: grid; place-items: center; color: var(--primary); font-size: 1.2rem; flex-shrink: 0;
+        }
+        
+        .card-info { flex: 1; }
+        .card-title { font-size: 1.1rem; margin-bottom: 4px; color: var(--text-primary); }
+        .card-meta { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* --- Heart Icon Fix (No Box) --- */
+        .fav-btn {
+            position: relative; z-index: 2; padding: 10px;
+            color: var(--text-secondary); transition: transform 0.2s;
+            font-size: 1.2rem;
+            /* No background or border */
+        }
+        .fav-btn:hover { color: #e74c3c; transform: scale(1.1); }
+        .fav-btn.is-fav { color: #e74c3c; }
+
+        /* --- Surah List --- */
+        .surah-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        /* اجعل هذا الكود يستبدل أي كود سابق للسور */
+        .surah-item {
+            background: var(--bg-surface);
+            padding: 14px 18px;
+            border-radius: 12px !important; /* هذا السطر سيجبر الحواف أن تكون دائرية للكل */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 0; /* إلغاء تداخل القوائم */
+        }
+
+        /* إلغاء الستايل القديم الذي كان يشوه الشكل */
+        .surah-item:first-child, 
+        .surah-item:last-child {
+            border-radius: 12px !important;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .surah-item:hover {
+            background: var(--bg-surface-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px); /* حركة بسيطة عند اللمس */
+        }
+
+        .surah-item.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .surah-item.active .surah-number { color: rgba(255,255,255,0.6); }
+        .surah-info { display: flex; align-items: center; gap: 12px; }
+        .surah-number {
+            font-weight: 700; font-size: 0.85rem; color: var(--accent);
+            width: 28px; height: 28px; display: grid; place-items: center;
+            background: rgba(0,0,0,0.03); border-radius: 6px;
+        }
+
+        /* --- Footer --- */
+        .app-footer {
+            text-align: center; padding: 40px 20px; margin-top: 40px; border-top: 1px solid var(--border);
+            color: var(--text-secondary); font-size: 0.9rem;
+        }
+        .dev-name { color: var(--primary); font-weight: bold; }
+        .footer-links { margin-top: 15px; display: flex; justify-content: center; gap: 20px; font-size: 1.3rem; }
+
+        /* Responsive Fixes */
+        @media (max-width: 768px) {
+            .surah-name-display { font-size: 2.2rem; }
+            .audio-player-wrapper { padding: 16px; width: 100%; top: 0; border-radius: 0 0 20px 20px; }
+            .tabs { gap: 10px; overflow-x: auto; padding-bottom: 5px; justify-content: flex-start; }
+            .tab-btn { white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="#" class="logo">
+                <i class="fas fa-quran"></i>
+                <span>القرآن الكريم</span>
+            </a>
+            <button class="theme-toggle" id="themeBtn"><i class="fas fa-moon"></i></button>
+        </header>
+
+        <section class="player-hero">
+            <div class="current-track-info" id="trackInfo">
+                <h1 class="surah-name-display" id="currentSurahName">سورة الفاتحة</h1>
+                <p class="reciter-name-display" id="currentReciterName">مشاري راشد العفاسي</p>
+            </div>
+
+            <div class="audio-player-wrapper">
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="time-stamps">
+                    <span id="currentTime">00:00</span>
+                    <span id="duration">00:00</span>
+                </div>
+
+                <div class="controls">
+                    <button class="btn-control" id="prevBtn"><i class="fas fa-step-forward"></i></button>
+                    <button class="btn-play" id="playBtn"><i class="fas fa-play" style="margin-right: -4px;"></i></button>
+                    <button class="btn-control" id="nextBtn"><i class="fas fa-step-backward"></i></button>
+                </div>
+                
+            </div>
+        </section>
+
+        <div class="search-wrapper">
+            <input type="search" id="searchInput" class="search-box" placeholder="بحث عن قارئ أو سورة...">
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="reciters">القراء</button>
+            <button class="tab-btn" data-tab="surahs">السور</button>
+            <button class="tab-btn" data-tab="favorites">المفضلة</button>
+        </div>
+
+        <section id="recitersSection">
+            <div class="grid-layout" id="recitersGrid"></div>
+        </section>
+
+        <section id="surahsSection" style="display: none;">
+            <div class="surah-list" id="surahsList"></div>
+        </section>
+        
+<footer class="app-footer">
+    <p>صدقة جارية</p>
+    <p>تم التطوير بواسطة <span class="dev-name">عبدالرحمن خالد</span></p>
+
+    <div class="footer-links">
+        <a href="https://www.linkedin.com/in/abdulrahman-khalid-arks"
+           target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-linkedin"></i>
+        </a>
+
+        <a href="https://github.com/abdulrahman-khalid-elhady"
+           target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-github"></i>
+        </a>
+
+    </div>
+</footer>
+
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        // --- Full Data (Backup Links Handled in Logic) ---
+        const recitersData = [
+            { id: 1, name: "مشاري راشد العفاسي", style: "حفص", server: "https://server8.mp3quran.net/afs/", backup: "https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/" },
+            { id: 2, name: "ماهر المعيقلي", style: "حفص", server: "https://server12.mp3quran.net/maher/", backup: "https://download.quranicaudio.com/quran/maher_almu3aiqly/" },
+            { id: 3, name: "عبدالرحمن السديس", style: "حفص", server: "https://server11.mp3quran.net/sds/", backup: "https://download.quranicaudio.com/quran/abdurrahmaan_as-sudays/" },
+            { id: 4, name: "بندر بليلة", style: "حفص", server: "https://download.quranicaudio.com/quran/bandar_baleela/", backup: "https://server6.mp3quran.net/balila/" },
+            { id: 5, name: "سعد الغامدي", style: "حفص", server: "https://server7.mp3quran.net/s_gmd/", backup: "https://download.quranicaudio.com/quran/sa3d_al-ghaamidee/" },
+            { id: 6, name: "ياسر الدوسري", style: "حفص", server: "https://server11.mp3quran.net/yasser/", backup: "https://download.quranicaudio.com/quran/yasser_ad-dussary/" },
+            { id: 7, name: "أحمد بن علي العجمي", style: "حفص", server: "https://server10.mp3quran.net/ajm/", backup: "https://download.quranicaudio.com/quran/ahmed_ibn_ali_al-ajamy/" },
+            { id: 8, name: "ناصر القطامي", style: "حفص", server: "https://server6.mp3quran.net/qtm/", backup: "https://download.quranicaudio.com/quran/nasser_alqatami/" },
+            { id: 9, name: "إدريس أبكر", style: "حفص", server: "https://server6.mp3quran.net/abkr/", backup: "https://download.quranicaudio.com/quran/idrees_abkar/" },
+            { id: 10, name: "عبدالباسط عبدالصمد", style: "مجود", server: "https://server7.mp3quran.net/basit/", backup: "https://download.quranicaudio.com/quran/abdul_basit_mujawwad/" },
+            { id: 11, name: "عبدالباسط عبدالصمد", style: "حفص", server: "https://download.quranicaudio.com/quran/abdul_basit_murattal/", backup: "https://server7.mp3quran.net/basit/Almusshaf-Al-Mojawwad/" },
+            { id: 12, name: "محمود خليل الحصري", style: "حفص", server: "https://server13.mp3quran.net/husr/", backup: "https://download.quranicaudio.com/quran/mahmood_khaleel_al-husaree_rachid/" },
+            { id: 13, name: "محمود خليل الحصري", style: "مجود", server: "https://server13.mp3quran.net/husr_mjwd/", backup: "" },
+            { id: 14, name: "محمد صديق المنشاوي", style: "حفص", server: "https://server10.mp3quran.net/minsh/", backup: "https://download.quranicaudio.com/quran/muhammad_siddiq_al-minshawi/" },
+            { id: 15, name: "محمد صديق المنشاوي", style: "مجود", server: "https://server10.mp3quran.net/minsh_mjwd/", backup: "https://download.quranicaudio.com/quran/muhammad_siddiq_al-minshawi_mujawwad/" },
+            { id: 16, name: "سعود الشريم", style: "حفص", server: "https://server7.mp3quran.net/shur/", backup: "https://download.quranicaudio.com/quran/sa3ood_al-shuraym/" },
+            { id: 17, name: "فارس عباد", style: "حفص", server: "https://server8.mp3quran.net/frs_a/", backup: "https://download.quranicaudio.com/quran/fares/" },
+            { id: 18, name: "أبو بكر الشاطري", style: "حفص", server: "https://server11.mp3quran.net/shatri/", backup: "https://download.quranicaudio.com/quran/abu_bakr_ash-shaatree/" },
+            { id: 19, name: "هاني الرفاعي", style: "حفص", server: "https://server8.mp3quran.net/hani/", backup: "https://download.quranicaudio.com/quran/hani_ar-rifai/" },
+            { id: 20, name: "محمد اللحيدان", style: "حفص", server: "https://server8.mp3quran.net/lhdan/", backup: "https://download.quranicaudio.com/quran/muhammad_alhaidan/" },
+            { id: 21, name: "صلاح بو خاطر", style: "حفص", server: "https://server8.mp3quran.net/bu_khtr/", backup: "https://download.quranicaudio.com/quran/salah_bukhatir/" },
+            { id: 22, name: "خالد الجليل", style: "حفص", server: "https://server10.mp3quran.net/jleel/", backup: "https://download.quranicaudio.com/quran/khalid_al-jaleel/" },
+            { id: 23, name: "عبدالله عواد الجهني", style: "حفص", server: "https://server13.mp3quran.net/jhn/", backup: "https://download.quranicaudio.com/quran/abdullaah_awwaad_al-juhaynee/" },
+            { id: 24, name: "وديع اليمني", style: "حفص", server: "https://server6.mp3quran.net/wdee3/", backup: "https://download.quranicaudio.com/quran/wadee_hammadi_al-yamani/" },
+            { id: 25, name: "هزاع البلوشي", style: "حفص", server: "https://server11.mp3quran.net/hazza/", backup: "" },
+            { id: 26, name: "عبدالرحمن العوسي", style: "حفص", server: "https://server6.mp3quran.net/aloosi/", backup: "" },
+            { id: 27, name: "علي الحذيفي", style: "حفص", server: "https://server9.mp3quran.net/hthfi/", backup: "https://download.quranicaudio.com/quran/ali_al-huthaify/" },
+            { id: 28, name: "محمود علي البنا", style: "حفص", server: "https://server8.mp3quran.net/bna/", backup: "https://download.quranicaudio.com/quran/mahmood_ali_albana/" },
+            { id: 29, name: "مصطفى إسماعيل", style: "مجود", server: "https://server8.mp3quran.net/mustafa/", backup: "https://download.quranicaudio.com/quran/mustafa_ismail/" },
+            { id: 30, name: "محمد أيوب", style: "حفص", server: "https://server8.mp3quran.net/ayyub/", backup: "https://download.quranicaudio.com/quran/muhammad_ayyoob/" },
+            { id: 31, name: "ياسين الجزائري", style: "ورش", server: "https://server11.mp3quran.net/jaza/", backup: "" },
+            { id: 32, name: "عمر القزابري", style: "ورش", server: "https://server9.mp3quran.net/omar_warsh/", backup: "" },
+            { id: 33, name: "العيون الكوشي", style: "ورش", server: "https://server11.mp3quran.net/kushi/", backup: "" },
+            { id: 34, name: "عبدالله بصفر", style: "حفص", server: "https://server6.mp3quran.net/bsfr/", backup: "https://download.quranicaudio.com/quran/abdullah_basfar/" },
+            { id: 35, name: "عبدالله المطرود", style: "حفص", server: "https://server8.mp3quran.net/mtrod/", backup: "https://download.quranicaudio.com/quran/abdullah_matroud/" },
+            { id: 36, name: "أحمد العبيد", style: "حفص", server: "https://server8.mp3quran.net/a_obed/", backup: "" },
+            { id: 37, name: "عادل الكلباني", style: "حفص", server: "https://server8.mp3quran.net/a_klb/", backup: "" },
+            { id: 38, name: "عادل ريان", style: "حفص", server: "https://server8.mp3quran.net/ryan/", backup: "https://download.quranicaudio.com/quran/adel_rayan/" },
+            { id: 39, name: "محمد جبريل", style: "حفص", server: "https://server8.mp3quran.net/jbrl/", backup: "https://download.quranicaudio.com/quran/muhammad_jibreel/" },
+            { id: 40, name: "نبيل الرفاعي", style: "حفص", server: "https://server9.mp3quran.net/nabil/", backup: "https://download.quranicaudio.com/quran/nabil_ar-rifai/" },
+            { id: 41, name: "الدوكالي محمد العالم", style: "قالون", server: "https://server7.mp3quran.net/dokali/", backup: "https://download.quranicaudio.com/quran/dukali_muhammad_al-alim/" },
+            { id: 42, name: "الزين محمد أحمد", style: "حفص", server: "https://server9.mp3quran.net/alzain/", backup: "" },
+            { id: 43, name: "صلاح البدير", style: "حفص", server: "https://server6.mp3quran.net/s_bud/", backup: "https://download.quranicaudio.com/quran/salah_albudair/" },
+            { id: 44, name: "عبدالمحسن القاسم", style: "حفص", server: "https://server8.mp3quran.net/qasm/", backup: "https://download.quranicaudio.com/quran/abdul_muhsin_alqasim/" },
+            { id: 45, name: "علي جابر", style: "حفص", server: "https://server11.mp3quran.net/a_jbr/", backup: "https://download.quranicaudio.com/quran/ali_jaber/" },
+            { id: 46, name: "محمد المحيسني", style: "حفص", server: "https://server11.mp3quran.net/mhsny/", backup: "" },
+            { id: 47, name: "هيثم الجدعاني", style: "حفص", server: "https://server16.mp3quran.net/hitham/", backup: "" },
+            { id: 48, name: "إبراهيم الأخضر", style: "حفص", server: "https://server6.mp3quran.net/akhdr/", backup: "https://download.quranicaudio.com/quran/ibrahim_al-akhdar/" },
+            { id: 49, name: "جمال شاكر عبدالله", style: "حفص", server: "https://server6.mp3quran.net/jamal/", backup: "" },
+            { id: 50, name: "شيخ أبو بكر الشاطري", style: "حفص", server: "https://server11.mp3quran.net/shatri/", backup: "" }
+        ];
+
+        const surahNames = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
+            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
+            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
+            "المسد", "الإخلاص", "الفلق", "الناس"
+        ];
+
+        const surahsData = surahNames.map((name, index) => ({ id: index + 1, name: name }));
+
+        let state = {
+            currentTab: 'reciters',
+            reciter: recitersData[0],
+            surahId: 1,
+            isPlaying: false,
+            favorites: JSON.parse(localStorage.getItem('quran_favs')) || [],
+            theme: localStorage.getItem('theme') || 'light'
+        };
+
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const searchInput = document.getElementById('searchInput');
+        const recitersGrid = document.getElementById('recitersGrid');
+        const surahsList = document.getElementById('surahsList');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const elSurahName = document.getElementById('currentSurahName');
+        const elReciterName = document.getElementById('currentReciterName');
+
+        function init() {
+            setTheme(state.theme);
+            renderReciters(recitersData);
+            renderSurahs(surahsData);
+            setupEventListeners();
+        }
+
+        // --- Core Audio Logic with Backup ---
+        function loadTrack(reciter, surahId, autoPlay = true, useBackup = false) {
+            state.reciter = reciter;
+            state.surahId = surahId;
+
+            const paddedId = String(surahId).padStart(3, '0');
+            // Try Backup if flag is true, otherwise Main
+            const server = (useBackup && reciter.backup) ? reciter.backup : reciter.server;
+            
+            // Note: QuranicAudio sometimes uses different filenaming, but mostly 001.mp3
+            // We assume standard format.
+            audio.src = `${server}${paddedId}.mp3`;
+            
+            // Error Handling for Backup
+            audio.onerror = () => {
+                if (!useBackup && reciter.backup) {
+                    console.log("Main link failed, trying backup...");
+                    loadTrack(reciter, surahId, autoPlay, true);
+                } else {
+                    console.log("All links failed");
+                    // Optionally alert user or show error UI
+                }
+            };
+
+            const surahName = surahsData.find(s => s.id === surahId).name;
+            elSurahName.textContent = `سورة ${surahName}`;
+            elReciterName.textContent = reciter.name;
+            
+            highlightActive();
+
+            if (autoPlay) playAudio();
+        }
+
+        function playAudio() {
+            audio.play().then(() => {
+                state.isPlaying = true;
+                updatePlayBtn();
+            }).catch(e => console.log("Audio load error", e));
+        }
+
+        function togglePlay() {
+            if(state.isPlaying) {
+                audio.pause();
+                state.isPlaying = false;
+            } else {
+                playAudio();
+            }
+            updatePlayBtn();
+        }
+
+        function updatePlayBtn() {
+            playBtn.innerHTML = state.isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play" style="margin-right: -4px;"></i>';
+        }
+
+        // --- Rendering ---
+        function renderReciters(list, isFavView = false) {
+            recitersGrid.innerHTML = '';
+            if(list.length === 0) {
+                recitersGrid.innerHTML = '<p style="text-align:center; width:100%; color:var(--text-secondary)">لا توجد نتائج</p>';
+                return;
+            }
+            
+            list.forEach(r => {
+                const isFav = state.favorites.includes(r.id);
+                const card = document.createElement('div');
+                card.className = `card ${r.id === state.reciter.id ? 'active' : ''}`;
+                // Clicking card plays (unless clicking heart)
+                card.onclick = (e) => {
+                    if(!e.target.closest('.fav-btn')) {
+                        loadTrack(r, state.surahId, true);
+                        if(window.innerWidth < 768) window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                };
+
+                card.innerHTML = `
+                    <div class="card-icon"><i class="fas fa-microphone-alt"></i></div>
+                    <div class="card-info">
+                        <h3 class="card-title">${r.name}</h3>
+                        <p class="card-meta">${r.style}</p>
+                    </div>
+                    <button class="fav-btn ${isFav ? 'is-fav' : ''}" onclick="toggleFav(${r.id}, this)">
+                        <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                    </button>
+                `;
+                recitersGrid.appendChild(card);
+            });
+        }
+
+        function renderSurahs(list) {
+            surahsList.innerHTML = '';
+            list.forEach(s => {
+                const item = document.createElement('div');
+                item.className = `surah-item ${s.id === state.surahId ? 'active' : ''}`;
+                item.onclick = () => {
+                    loadTrack(state.reciter, s.id, true);
+                    if(window.innerWidth < 768) window.scrollTo({ top: 0, behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <div class="surah-info">
+                        <div class="surah-number">${s.id}</div>
+                        <span class="surah-name">سورة ${s.name}</span>
+                    </div>
+                    <i class="far fa-play-circle" style="color: var(--text-secondary);"></i>
+                `;
+                surahsList.appendChild(item);
+            });
+        }
+
+        function highlightActive() {
+            if(state.currentTab === 'reciters') renderReciters(recitersData); // Refresh to show active
+            if(state.currentTab === 'surahs') renderSurahs(surahsData);
+            if(state.currentTab === 'favorites') showFavorites();
+        }
+
+        // --- Tabs & Favorites ---
+        window.toggleFav = function(id, btn) {
+            const index = state.favorites.indexOf(id);
+            if (index === -1) {
+                state.favorites.push(id);
+                btn.classList.add('is-fav');
+                btn.querySelector('i').className = 'fas fa-heart';
+            } else {
+                state.favorites.splice(index, 1);
+                btn.classList.remove('is-fav');
+                btn.querySelector('i').className = 'far fa-heart';
+                if(state.currentTab === 'favorites') showFavorites();
+            }
+            localStorage.setItem('quran_favs', JSON.stringify(state.favorites));
+        }
+
+        function showFavorites() {
+            const favReciters = recitersData.filter(r => state.favorites.includes(r.id));
+            renderReciters(favReciters, true);
+        }
+
+        function setupEventListeners() {
+            playBtn.addEventListener('click', togglePlay);
+            document.getElementById('themeBtn').addEventListener('click', () => {
+                const newTheme = state.theme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+            });
+
+            // Tabs
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.currentTab = btn.dataset.tab;
+                    searchInput.value = ''; // Reset search
+
+                    document.getElementById('recitersSection').style.display = 'none';
+                    document.getElementById('surahsSection').style.display = 'none';
+
+                    if(state.currentTab === 'reciters') {
+                        document.getElementById('recitersSection').style.display = 'block';
+                        renderReciters(recitersData);
+                        searchInput.placeholder = "بحث عن قارئ...";
+                    } else if(state.currentTab === 'surahs') {
+                        document.getElementById('surahsSection').style.display = 'block';
+                        renderSurahs(surahsData);
+                        searchInput.placeholder = "بحث عن سورة...";
+                    } else if(state.currentTab === 'favorites') {
+                        document.getElementById('recitersSection').style.display = 'block';
+                        showFavorites();
+                        searchInput.placeholder = "بحث في المفضلة...";
+                    }
+                });
+            });
+
+            // Search
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                if(state.currentTab === 'reciters') {
+                    renderReciters(recitersData.filter(r => r.name.includes(term)));
+                } else if(state.currentTab === 'surahs') {
+                    renderSurahs(surahsData.filter(s => s.name.includes(term)));
+                } else if(state.currentTab === 'favorites') {
+                    const favs = recitersData.filter(r => state.favorites.includes(r.id));
+                    renderReciters(favs.filter(r => r.name.includes(term)), true);
+                }
+            });
+
+            // Audio Progress
+            audio.addEventListener('timeupdate', () => {
+                if(isNaN(audio.duration)) return;
+                const pct = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('progressBar').style.width = `${pct}%`;
+                document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
+                document.getElementById('duration').textContent = formatTime(audio.duration);
+            });
+            
+            document.getElementById('progressContainer').addEventListener('click', function(e) {
+                const width = this.clientWidth;
+                const clickX = e.offsetX;
+                const duration = audio.duration;
+                audio.currentTime = (clickX / width) * duration;
+            });
+
+            // Next/Prev
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if(state.surahId > 1) loadTrack(state.reciter, state.surahId - 1, true);
+            });
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                if(state.surahId < 114) loadTrack(state.reciter, state.surahId + 1, true);
+            });
+            audio.addEventListener('ended', () => {
+                if(state.surahId < 114) loadTrack(state.reciter, state.surahId + 1, true);
+            });
+        }
+
+        function setTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            state.theme = t;
+            localStorage.setItem('theme', t);
+            document.getElementById('themeBtn').innerHTML = t === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        init();
+    </script>
+</body>
+</html>
