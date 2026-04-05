@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القرآن الكريم | The Holy Quran</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231F4E43'/%3E%3Cpath fill='%23D4AF37' d='M50 25c0 0-5-5-20-5s-20 5-20 5v40c0 0 5-5 20-5s20 5 20 5v-40z'/%3E%3Cpath fill='%23D4AF37' d='M50 25c0 0 5-5 20-5s20 5 20 5v40c0 0-5-5-20-5s-20 5-20 5v-40z'/%3E%3Cpath stroke='%231F4E43' stroke-width='2' d='M50 25v45'/%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #F9F7F2; --bg-surface: #FFFFFF; --bg-surface-hover: #F2EFE9;
+            --text-primary: #1A3C34; --text-secondary: #5C706A; --primary: #1F4E43;
+            --primary-light: #2A6658; --accent: #D4AF37; --border: #E0DCD5;
+            --shadow: 0 4px 20px rgba(26, 60, 52, 0.06); --shadow-hover: 0 8px 30px rgba(26, 60, 52, 0.12);
+            --radius-md: 16px; --radius-lg: 24px; --radius-full: 9999px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-heading: 'Amiri', serif; --font-ui: 'Tajawal', sans-serif;
+            
+            /* Player specific vars based on React design */
+            --player-bg: rgba(255, 255, 255, 0.95);
+            --player-border: #E0DCD5;
+            --range-track: #E0DCD5;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0F1716; --bg-surface: #1A2624; --bg-surface-hover: #23302E;
+            --text-primary: #ECECEC; --text-secondary: #A0B3B0; --primary: #468C79;
+            --primary-light: #5AA390; --accent: #C5A028; --border: #2A3836;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4); --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.6);
+            
+             /* Player specific vars dark */
+            --player-bg: rgba(26, 38, 36, 0.95);
+            --player-border: #2A3836;
+            --range-track: #2A3836;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-ui); background-color: var(--bg-body);
+            color: var(--text-primary); line-height: 1.6; transition: background-color 0.5s ease;
+            overflow-x: hidden; background-image: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.03) 0%, transparent 40%);
+        }
+
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6z' fill='%23D4AF37' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: -1;
+        }
+
+        h1, h2, h3 { font-family: var(--font-heading); font-weight: 700; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; transition: var(--transition); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; }
+        .logo { font-family: var(--font-heading); font-size: 2rem; color: var(--primary); display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        [data-theme="dark"] .logo { color: var(--text-primary); }
+        .logo i { color: var(--accent); }
+        .theme-toggle { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border); display: grid; place-items: center; color: var(--text-primary); }
+
+        /* --- NEW PLAYER STYLES (Matching React Design) --- */
+        .player-hero { text-align: center; padding: 20px 0 40px; position: relative; }
+        
+        .audio-player-wrapper {
+            background: var(--player-bg);
+            border: 1px solid var(--player-border);
+            padding: 1.5rem; /* p-6 */
+            border-radius: 1.5rem; /* rounded-3xl */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+            backdrop-filter: blur(12px); /* backdrop-blur-md */
+            max-width: 900px; /* Wider to accommodate flex layout */
+            margin: 30px auto 0;
+            position: sticky; top: 20px; z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .player-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .player-layout {
+                flex-direction: row;
+            }
+            .track-info-side {
+                text-align: right;
+                flex: 1;
+            }
+            .controls-side {
+                flex: 1;
+                width: 100%;
+                max-width: 32rem; /* max-w-lg */
+            }
+        }
+
+        .surah-name-display {
+            font-family: var(--font-heading);
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700;
+            color: var(--primary); /* fallback */
+            margin-bottom: 0.25rem;
+        }
+        [data-theme="dark"] .surah-name-display { color: #fff; }
+        [data-theme="light"] .surah-name-display { color: #1F4E43; }
+
+        @media (min-width: 768px) {
+            .surah-name-display { font-size: 2.25rem; /* text-4xl */ }
+        }
+
+        .reciter-name-display {
+            color: #D4AF37;
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 700;
+        }
+
+        /* Range Input Styling (The Loader) */
+        .range-wrapper {
+            width: 100%;
+            position: relative;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px; /* h-2 */
+            border-radius: 8px; /* rounded-lg */
+            background: var(--range-track);
+            outline: none;
+            cursor: pointer;
+            direction: rtl; /* Important for Arabic slider */
+        }
+
+        /* --- EDIT: HIDING THE BALL (THUMB) --- */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 0;
+            height: 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+        
+        input[type=range]::-moz-range-thumb {
+            width: 0;
+            height: 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+        /* --- END EDIT --- */
+        
+        /* Time Stamps */
+        .time-stamps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        /* Buttons Row */
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-icon {
+            padding: 0.75rem; /* p-3 */
+            font-size: 1.25rem; /* text-xl */
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+        
+        .btn-icon:hover { color: var(--primary); }
+        [data-theme="dark"] .btn-icon:hover { color: var(--primary-light); }
+        .btn-icon:hover.random-btn { color: #D4AF37; }
+
+        .btn-play-main {
+            width: 4rem; height: 4rem; /* w-16 h-16 */
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; /* text-2xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        [data-theme="dark"] .btn-play-main { background: #468C79; }
+        
+        .btn-play-main:hover { transform: scale(1.05); }
+
+        .active-mode { color: #D4AF37 !important; }
+
+        /* --- End Player Styles --- */
+
+        .search-wrapper { max-width: 700px; margin: 40px auto 30px; }
+        .search-box {
+            width: 100%; padding: 12px 20px; border-radius: var(--radius-full);
+            border: 1px solid var(--border); background: var(--bg-surface);
+            font-family: var(--font-ui); font-size: 1rem; color: var(--text-primary);
+            outline: none; transition: var(--transition);
+        }
+        .search-box:focus { border-color: var(--accent); box-shadow: var(--shadow); }
+
+        .tabs { display: flex; gap: 20px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 24px; border-radius: var(--radius-full); font-weight: 500; color: var(--text-secondary); border: 1px solid transparent; }
+        .tab-btn.active { background: var(--bg-surface); color: var(--primary); border-color: var(--border); box-shadow: var(--shadow); }
+
+        .grid-layout {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px; margin-bottom: 30px;
+        }
+        
+        .card {
+            background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md);
+            border: 1px solid var(--border); transition: var(--transition);
+            display: flex; align-items: center; gap: 16px; cursor: pointer; position: relative;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); border-color: var(--accent); }
+        .card.active { border-color: var(--primary); background: var(--bg-surface-hover); }
+
+        .card-icon {
+            width: 50px; height: 50px; background: var(--bg-body); border-radius: 50%;
+            display: grid; place-items: center; color: var(--primary); font-size: 1.2rem; flex-shrink: 0;
+        }
+        
+        .card-info { flex: 1; }
+        .card-title { font-size: 1.1rem; margin-bottom: 4px; color: var(--text-primary); }
+        .card-meta { font-size: 0.85rem; color: var(--text-secondary); }
+
+        .fav-btn {
+            position: relative; z-index: 2; padding: 10px;
+            color: var(--text-secondary); transition: transform 0.2s; font-size: 1.2rem;
+        }
+        .fav-btn:hover { color: #e74c3c; transform: scale(1.1); }
+        .fav-btn.is-fav { color: #e74c3c; }
+
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 60px; }
+        .page-btn {
+            padding: 8px 16px; border-radius: 8px; background: var(--bg-surface);
+            border: 1px solid var(--border); color: var(--text-primary); font-weight: bold;
+        }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-info { font-weight: bold; color: var(--primary); }
+
+        .surah-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .surah-item {
+            background: var(--bg-surface); padding: 14px 18px; border-radius: 12px !important;
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid var(--border); cursor: pointer; transition: var(--transition);
+        }
+        .surah-item:hover { background: var(--bg-surface-hover); border-color: var(--accent); transform: translateY(-2px); }
+        .surah-item.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .surah-info { display: flex; align-items: center; gap: 12px; }
+        .surah-number {
+            font-weight: 700; font-size: 0.85rem; color: var(--accent);
+            width: 28px; height: 28px; display: grid; place-items: center;
+            background: rgba(0,0,0,0.03); border-radius: 6px;
+        }
+        .error-toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #468C79; color: white; padding: 12px 25px;
+            border-radius: 30px; z-index: 10001; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: fadeInUp 0.5s;
+        }
+        @keyframes fadeInUp { from { opacity: 0; bottom: 0; } to { opacity: 1; bottom: 20px; } }
+
+        .app-footer {
+            text-align: center; padding: 40px 20px; margin-top: 40px; border-top: 1px solid var(--border);
+            color: var(--text-secondary); font-size: 0.9rem;
+        }
+        .dev-name { color: var(--primary); font-weight: bold; }
+        .footer-links { margin-top: 15px; display: flex; justify-content: center; gap: 20px; font-size: 1.3rem; }
+
+        @media (max-width: 768px) {
+            .audio-player-wrapper { padding: 16px; width: 100%; top: 0; border-radius: 0 0 20px 20px; margin-top: 0; }
+        }
+        /* Track Actions (Save & Download) */
+.track-actions { 
+    display: flex; 
+    gap: 15px; 
+    margin-top: 12px; 
+    justify-content: center; 
+}
+@media (min-width: 768px) { 
+    .track-actions { justify-content: flex-end; } 
+}
+.action-btn { 
+    color: var(--text-secondary); 
+    font-size: 1.2rem; 
+    transition: var(--transition); 
+    padding: 5px; 
+}
+.action-btn:hover { 
+    color: var(--primary); 
+    transform: scale(1.1); 
+}
+.action-btn.is-saved { 
+    color: #e74c3c; 
+}
+.action-btn.is-saved:hover { 
+    color: #c0392b; 
+}
+/* زرار الحذف في الكارد الجديد */
+.delete-btn:hover { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="#" class="logo"><i class="fas fa-quran"></i><span>القرآن الكريم</span></a>
+            <button class="theme-toggle" id="themeBtn"><i class="fas fa-moon"></i></button>
+        </header>
+
+        <section class="player-hero">
+            <div class="audio-player-wrapper">
+                <div class="player-layout">
+                    <div class="track-info-side">
+                        <h2 class="surah-name-display" id="currentSurahName">قرآن يتلى</h2>
+                        <p class="reciter-name-display" id="currentReciterName">آناء الليل وأطراف النهار</p>
+
+                      </div>
+
+                    <div class="controls-side">
+                        <div class="range-wrapper">
+                            <input type="range" id="progressBar" min="0" max="100" step="0.1" value="0">
+                        </div>
+                        
+                        <div class="time-stamps">
+                            <span id="currentTime">00:00</span>
+                            <span id="duration">00:00</span>
+                        </div>
+
+                        <div class="controls-row">
+                          <button class="action-btn" id="downloadBtn" title="تحميل التلاوة">
+            <i class="fas fa-download"></i>
+        </button>
+                          <button class="btn-icon random-btn" id="randomBtn" title="سورة عشوائية بصوت عشوائي">
+                                <i class="fas fa-shuffle"></i>
+                            </button>
+
+                            <button class="btn-icon" id="nextBtn">
+                                <i class="fas fa-step-forward"></i>
+                            </button>
+
+                            <button class="btn-play-main" id="playBtn">
+                                <i class="fas fa-play" style="margin-right: -4px;"></i>
+                            </button>
+
+                            <button class="btn-icon" id="prevBtn">
+                                <i class="fas fa-step-backward"></i>
+                            </button>
+
+                            <button class="btn-icon" id="modeBtn" title="نمط التشغيل">
+                                <i class="fas fa-list-ol"></i>
+                            </button>
+                            <button class="action-btn" id="saveTrackBtn" title="حفظ التلاوة">
+            <i class="far fa-heart"></i>
+        </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="search-wrapper">
+            <input type="search" id="searchInput" class="search-box" placeholder="بحث عن قارئ...">
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="reciters">القراء</button>
+            <button class="tab-btn" data-tab="surahs">السور</button>
+            <button class="tab-btn" data-tab="favorites">المفضلة</button>
+            <button class="tab-btn" data-tab="saved_tracks">تلاواتي</button>
+        </div>
+
+        <section id="recitersSection">
+            <div class="grid-layout" id="recitersGrid"></div>
+            <div class="pagination" id="pagination">
+                <button class="page-btn" id="prevPage" disabled>السابق</button>
+                <span class="page-info" id="pageInfo">صفحة 1 من 1</span>
+                <button class="page-btn" id="nextPage">التالي</button>
+            </div>
+        </section>
+
+
+        <section id="surahsSection" style="display: none;"><div class="surah-list" id="surahsList"></div></section>
+        <section id="savedTracksSection" style="display: none;">
+    <div class="grid-layout" id="savedTracksGrid"></div>
+</section>
+        <footer class="app-footer">
+            <p>صدقة جارية</p>
+            <p>تم التطوير بواسطة <span class="dev-name">عبدالرحمن خالد</span></p>
+            <div class="footer-links">
+                <a href="https://www.linkedin.com/in/abdulrahman-khalid-arks" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/abdulrahman-khalid-elhady" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+            </div>
+        </footer>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        const recitersData = [ {
+    "id": 1,
+    "name": "إبراهيم الأخضر",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/akdr/"
+  },
+  {
+    "id": 2,
+    "name": "إبراهيم الجبرين",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/jbreen/"
+  },
+  {
+    "id": 3,
+    "name": "إبراهيم العسيري",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/3siri/"
+  },
+  {
+    "id": 4,
+    "name": "أبو بكر الشاطري",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/shatri/"
+  },
+  {
+    "id": 5,
+    "name": "أحمد بن علي العجمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/ajm/"
+  },
+  {
+    "id": 6,
+    "name": "أحمد الحواشي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/hawashi/"
+  },
+  {
+    "id": 7,
+    "name": "أحمد سعود",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/saud/"
+  },
+  {
+    "id": 8,
+    "name": "أحمد صابر",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/saber/"
+  },
+  {
+    "id": 9,
+    "name": "أحمد نعينع",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/ahmad_nu/"
+  },
+  {
+    "id": 10,
+    "name": "أكرم العلاقمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/akrm/"
+  },
+  {
+    "id": 11,
+    "name": "الحسيني العزازي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/3zazi/"
+  },
+  {
+    "id": 12,
+    "name": "إدريس أبكر",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/abkr/"
+  },
+  {
+    "id": 13,
+    "name": "الزين محمد أحمد",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/alzain/"
+  },
+  {
+    "id": 14,
+    "name": "القارئ ياسين",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/qari/"
+  },
+  {
+    "id": 15,
+    "name": "العشري عمران",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/omran/"
+  },
+  {
+    "id": 16,
+    "name": "العيون الكوشي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/koshi/"
+  },
+  {
+    "id": 17,
+    "name": "توفيق الصايغ",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/twfeeq/"
+  },
+  {
+    "id": 18,
+    "name": "جمال شاكر عبدالله",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/jamal/"
+  },
+  {
+    "id": 19,
+    "name": "حمد الدغريري",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/hamad/"
+  },
+  {
+    "id": 20,
+    "name": "خالد الجليل",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/jleel/"
+  },
+  {
+    "id": 21,
+    "name": "خالد القحطاني",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/qht/"
+  },
+  {
+    "id": 22,
+    "name": "خالد عبدالكافي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/kafi/"
+  },
+  {
+    "id": 23,
+    "name": "خالد الوهيبي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/whabi/"
+  },
+  {
+    "id": 24,
+    "name": "خليفة الطنيجي",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/tnjy/"
+  },
+  {
+    "id": 25,
+    "name": "داود حمزة",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/hamza/"
+  },
+  {
+    "id": 26,
+    "name": "رشيد إفراد",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/ifrad/"
+  },
+  {
+    "id": 27,
+    "name": "رشيد بلعالية",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/bl3/Rewayat-Warsh-A-n-Nafi/"
+  },
+  {
+    "id": 28,
+    "name": "زكريا حمامة",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/zakariya/"
+  },
+  {
+    "id": 29,
+    "name": "عبدالله بخاري",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_bukhari/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 30,
+    "name": "سعد الغامدي",
+    "style": "حفص عن عاصم",
+    "server": "https://server7.mp3quran.net/s_gmd/"
+  },
+  {
+    "id": 31,
+    "name": "سعود الشريم",
+    "style": "حفص عن عاصم",
+    "server": "https://server7.mp3quran.net/shur/"
+  },
+  {
+    "id": 32,
+    "name": "سهل ياسين",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/shl/"
+  },
+  {
+    "id": 33,
+    "name": "زكي داغستاني",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/zaki/"
+  },
+  {
+    "id": 34,
+    "name": "سامي الحسن",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/sami_hsn/"
+  },
+  {
+    "id": 35,
+    "name": "سامي الدوسري",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/sami_dosr/"
+  },
+  {
+    "id": 36,
+    "name": "سيد رمضان",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/sayed/"
+  },
+  {
+    "id": 37,
+    "name": "شعبان الصياد",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/shaban/"
+  },
+  {
+    "id": 38,
+    "name": "شيرزاد عبدالرحمن طاهر",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/taher/"
+  },
+  {
+    "id": 39,
+    "name": "صابر عبدالحكم",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/hkm/"
+  },
+  {
+    "id": 40,
+    "name": "صالح الصاهود",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/sahood/"
+  },
+  {
+    "id": 41,
+    "name": "صالح آل طالب",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/tlb/"
+  },
+  {
+    "id": 42,
+    "name": "صالح الهبدان",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/habdan/"
+  },
+  {
+    "id": 43,
+    "name": "صلاح البدير",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/s_bud/"
+  },
+  {
+    "id": 44,
+    "name": "صلاح الهاشم",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/salah_hashim_m/"
+  },
+  {
+    "id": 45,
+    "name": "صلاح بو خاطر",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/bu_khtr/"
+  },
+  {
+    "id": 46,
+    "name": "مختار الحاج",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/mukhtar_haj/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 47,
+    "name": "عادل ريان",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/ryan/"
+  },
+  {
+    "id": 48,
+    "name": "عبدالبارئ الثبيتي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/thubti/"
+  },
+  {
+    "id": 49,
+    "name": "عبدالبارئ محمد",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/bari/"
+  },
+  {
+    "id": 50,
+    "name": "عبدالباسط عبدالصمد",
+    "style": "حفص عن عاصم",
+    "server": "https://server7.mp3quran.net/basit/Almusshaf-Al-Mojawwad/"
+  },
+  {
+    "id": 51,
+    "name": "عبدالرحمن السديس",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/sds/"
+  },
+  {
+    "id": 52,
+    "name": "عبدالعزيز الأحمد",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/a_ahmed/"
+  },
+  {
+    "id": 53,
+    "name": "عبدالعزيز الزهراني",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/zahrani/"
+  },
+  {
+    "id": 54,
+    "name": "عبدالله البريمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/brmi/"
+  },
+  {
+    "id": 55,
+    "name": "عبدالله البعيجان",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/buajan/"
+  },
+  {
+    "id": 56,
+    "name": "عبدالله المطرود",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/mtrod/"
+  },
+  {
+    "id": 57,
+    "name": "عبدالله بصفر",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/bsfr/"
+  },
+  {
+    "id": 58,
+    "name": "عبدالله خياط",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/kyat/"
+  },
+  {
+    "id": 59,
+    "name": "عبدالله عواد الجهني",
+    "style": "حفص عن عاصم",
+    "server": "https://server13.mp3quran.net/jhn/"
+  },
+  {
+    "id": 60,
+    "name": "عبدالله غيلان",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/gulan/"
+  },
+  {
+    "id": 61,
+    "name": "عبدالرشيد صوفي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/soufi/Rewayat-Khalaf-A-n-Hamzah/"
+  },
+  {
+    "id": 62,
+    "name": "عبدالمحسن الحارثي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/mohsin_harthi/"
+  },
+  {
+    "id": 63,
+    "name": "عبدالمحسن القاسم",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/qasm/"
+  },
+  {
+    "id": 64,
+    "name": "عبدالمحسن العسكر",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/askr/"
+  },
+  {
+    "id": 65,
+    "name": "عبدالمحسن العبيكان",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/obk/"
+  },
+  {
+    "id": 66,
+    "name": "عبدالهادي أحمد كناكري",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/kanakeri/"
+  },
+  {
+    "id": 67,
+    "name": "عبدالودود حنيف",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/wdod/"
+  },
+  {
+    "id": 68,
+    "name": "عبدالولي الأركاني",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/arkani/"
+  },
+  {
+    "id": 69,
+    "name": "علي أبو هاشم",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/abo_hashim/"
+  },
+  {
+    "id": 70,
+    "name": "علي بن عبدالرحمن الحذيفي",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/hthfi/"
+  },
+  {
+    "id": 71,
+    "name": "علي جابر",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/a_jbr/"
+  },
+  {
+    "id": 72,
+    "name": "علي حجاج السويسي",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/hajjaj/"
+  },
+  {
+    "id": 73,
+    "name": "عماد زهير حافظ",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/hafz/"
+  },
+  {
+    "id": 74,
+    "name": "عبدالعزيز التركي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_turki/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 75,
+    "name": "عمر القزابري",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/omar_warsh/"
+  },
+  {
+    "id": 76,
+    "name": "فارس عباد",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/frs_a/"
+  },
+  {
+    "id": 77,
+    "name": "فهد العتيبي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/fahad_otibi/"
+  },
+  {
+    "id": 78,
+    "name": "فهد الكندري",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/kndri/"
+  },
+  {
+    "id": 79,
+    "name": "فواز الكعبي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/fawaz/"
+  },
+  {
+    "id": 80,
+    "name": "لافي العوني",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/lafi/"
+  },
+  {
+    "id": 81,
+    "name": "ناصر القطامي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/qtm/"
+  },
+  {
+    "id": 82,
+    "name": "نبيل الرفاعي",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/nabil/"
+  },
+  {
+    "id": 83,
+    "name": "نعمة الحسان",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/namh/"
+  },
+  {
+    "id": 84,
+    "name": "هاني الرفاعي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/hani/"
+  },
+  {
+    "id": 85,
+    "name": "وليد الدليمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/dlami/"
+  },
+  {
+    "id": 86,
+    "name": "وليد النائحي",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/waleed/"
+  },
+  {
+    "id": 87,
+    "name": "ياسر الدوسري",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/yasser/"
+  },
+  {
+    "id": 88,
+    "name": "ياسر القرشي",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/qurashi/"
+  },
+  {
+    "id": 89,
+    "name": "ياسر الفيلكاوي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/fyl/"
+  },
+  {
+    "id": 90,
+    "name": "ياسر المزروعي",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/mzroyee/"
+  },
+  {
+    "id": 91,
+    "name": "يحيى حوا",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/yahya/"
+  },
+  {
+    "id": 92,
+    "name": "يوسف الشويعي",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/yousef/"
+  },
+  {
+    "id": 93,
+    "name": "عبدالله عبدل",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_abdl/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 94,
+    "name": "ماجد العنزي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/majd_onazi/"
+  },
+  {
+    "id": 95,
+    "name": "ماهر المعيقلي",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/maher/"
+  },
+  {
+    "id": 96,
+    "name": "محمد الأيراوي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/earawi/"
+  },
+  {
+    "id": 97,
+    "name": "محمد البراك",
+    "style": "حفص عن عاصم",
+    "server": "https://server13.mp3quran.net/braak/"
+  },
+  {
+    "id": 98,
+    "name": "محمد الطبلاوي",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/tblawi/"
+  },
+  {
+    "id": 99,
+    "name": "محمد اللحيدان",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/lhdan/"
+  },
+  {
+    "id": 100,
+    "name": "محمد المحيسني",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/mhsny/"
+  },
+  {
+    "id": 101,
+    "name": "محمد أيوب",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/ayyub/"
+  },
+  {
+    "id": 102,
+    "name": "محمد صالح عالم شاه",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/shah/"
+  },
+  {
+    "id": 103,
+    "name": "محمد جبريل",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/jbrl/"
+  },
+  {
+    "id": 104,
+    "name": "محمد صديق المنشاوي",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/minsh/"
+  },
+  {
+    "id": 105,
+    "name": "محمد عبدالكريم",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/m_krm/"
+  },
+  {
+    "id": 106,
+    "name": "محمد عبدالحكيم سعيد العبدالله",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/abdullah/"
+  },
+  {
+    "id": 107,
+    "name": "محمود خليل الحصري",
+    "style": "حفص عن عاصم",
+    "server": "https://server13.mp3quran.net/husr/"
+  },
+  {
+    "id": 108,
+    "name": "محمود علي البنا",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/bna/"
+  },
+  {
+    "id": 109,
+    "name": "مشاري العفاسي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/afs/"
+  },
+  {
+    "id": 110,
+    "name": "مصطفى إسماعيل",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/mustafa/"
+  },
+  {
+    "id": 111,
+    "name": "مصطفى اللاهوني",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/lahoni/"
+  },
+  {
+    "id": 112,
+    "name": "مصطفى رعد العزاوي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/ra3ad/"
+  },
+  {
+    "id": 113,
+    "name": "معمر الأندونيسي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/muamr/"
+  },
+  {
+    "id": 114,
+    "name": "مفتاح السلطني",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/muftah_sultany/Rewayat-Aldori-A-n-Abi-Amr/"
+  },
+  {
+    "id": 115,
+    "name": "محمد سايد",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/m_sayed/Rewayat-Warsh-A-n-Nafi/"
+  },
+  {
+    "id": 116,
+    "name": "عبدالرحمن السويّد",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_swaiyd/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 117,
+    "name": "عبدالإله بن عون",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_binaoun/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 118,
+    "name": "أحمد طالب بن حميد",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_binhameed/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 119,
+    "name": "نورين محمد صديق",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/nourin_siddig/Rewayat-Aldori-A-n-Abi-Amr/"
+  },
+  {
+    "id": 120,
+    "name": "ماجد الزامل",
+    "style": "حفص عن عاصم",
+    "server": "https://server9.mp3quran.net/zaml/"
+  },
+  {
+    "id": 121,
+    "name": "ماهر شخاشيرو",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/shaksh/"
+  },
+  {
+    "id": 122,
+    "name": "محمد المنشد",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/monshed/"
+  },
+  {
+    "id": 123,
+    "name": "محمود الشيمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/sheimy/"
+  },
+  {
+    "id": 124,
+    "name": "ياسر سلامة",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/salamah/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 125,
+    "name": "أخيل عبدالحي روا",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/akil/"
+  },
+  {
+    "id": 126,
+    "name": "أستاذ زامري",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/zamri/"
+  },
+  {
+    "id": 127,
+    "name": "خالد المهنا",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/mohna/"
+  },
+  {
+    "id": 128,
+    "name": "عادل الكلباني",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/a_klb/"
+  },
+  {
+    "id": 129,
+    "name": "موسى بلال",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/bilal/"
+  },
+  {
+    "id": 130,
+    "name": "حسين آل الشيخ",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/alshaik/"
+  },
+  {
+    "id": 131,
+    "name": "حاتم فريد الواعر",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/hatem/"
+  },
+  {
+    "id": 132,
+    "name": "إبراهيم الجرمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/jormy/"
+  },
+  {
+    "id": 133,
+    "name": "محمود الرفاعي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/mrifai/"
+  },
+  {
+    "id": 134,
+    "name": "ناصر العبيد",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/obaid/"
+  },
+  {
+    "id": 135,
+    "name": "واصل المذن",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/wasel/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 136,
+    "name": "إبراهيم الدوسري",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/ibrahim_dosri/Rewayat-Warsh-A-n-Nafi/"
+  },
+  {
+    "id": 137,
+    "name": "جمعان العصيمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/jaman/"
+  },
+  {
+    "id": 138,
+    "name": "رضية عبدالرحمن",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/rziah/"
+  },
+  {
+    "id": 139,
+    "name": "رقية سولونق",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/rogiah/"
+  },
+  {
+    "id": 140,
+    "name": "سابينة مامات",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/mamat/"
+  },
+  {
+    "id": 141,
+    "name": "سيدين عبدالرحمن",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/sideen/"
+  },
+  {
+    "id": 142,
+    "name": "عبدالغني عبدالله",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/abdulgani/"
+  },
+  {
+    "id": 143,
+    "name": "عبدالله فهمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/fhmi/"
+  },
+  {
+    "id": 144,
+    "name": "محمد الحافظ",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/hafz/"
+  },
+  {
+    "id": 145,
+    "name": "محمد حفص علي",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/hfs/"
+  },
+  {
+    "id": 146,
+    "name": "محمد خير النور",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/malaysia/nor/"
+  },
+  {
+    "id": 147,
+    "name": "يوسف بن نوح أحمد",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/noah/"
+  },
+  {
+    "id": 148,
+    "name": "جمال الدين الزيلعي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/zilaie/"
+  },
+  {
+    "id": 149,
+    "name": "معيض الحارثي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/harthi/"
+  },
+  {
+    "id": 150,
+    "name": "محمد رشاد الشريف",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/rashad/"
+  },
+  {
+    "id": 151,
+    "name": "أحمد الطرابلسي",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/trablsi/"
+  },
+  {
+    "id": 152,
+    "name": "عبدالله الكندري",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/Abdullahk/"
+  },
+  {
+    "id": 153,
+    "name": "أحمد عامر",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/Aamer/"
+  },
+  {
+    "id": 154,
+    "name": "إبراهيم السعدان",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/IbrahemSadan/"
+  },
+  {
+    "id": 155,
+    "name": "أحمد الحذيفي",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/ahmad_huth/"
+  },
+  {
+    "id": 156,
+    "name": "محمد عثمان خان",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/khan/"
+  },
+  {
+    "id": 157,
+    "name": "يوسف الدغوش",
+    "style": "حفص عن عاصم",
+    "server": "https://server7.mp3quran.net/dgsh/"
+  },
+  {
+    "id": 158,
+    "name": "الدوكالي محمد العالم",
+    "style": "حفص عن عاصم",
+    "server": "https://server7.mp3quran.net/dokali/"
+  },
+  {
+    "id": 159,
+    "name": "وشيار حيدر اربيلي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/wishear/"
+  },
+  {
+    "id": 160,
+    "name": "الفاتح محمد الزبير",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/fateh/"
+  },
+  {
+    "id": 161,
+    "name": "طارق عبدالغني دعوب",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/tareq/"
+  },
+  {
+    "id": 162,
+    "name": "عثمان الأنصاري",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/Othmn/"
+  },
+  {
+    "id": 163,
+    "name": "بندر بليله",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/balilah/"
+  },
+  {
+    "id": 164,
+    "name": "خالد الشريمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server12.mp3quran.net/shoraimy/"
+  },
+  {
+    "id": 165,
+    "name": "وديع اليمني",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/wdee3/"
+  },
+  {
+    "id": 166,
+    "name": "رعد محمد الكردي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/kurdi/"
+  },
+  {
+    "id": 167,
+    "name": "عبدالرحمن العوسي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/aloosi/"
+  },
+  {
+    "id": 168,
+    "name": "خالد الغامدي",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/ghamdi/"
+  },
+  {
+    "id": 169,
+    "name": "رمضان شكور",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/shakoor/"
+  },
+  {
+    "id": 170,
+    "name": "عبدالمجيد الأركاني",
+    "style": "حفص عن عاصم",
+    "server": "https://server7.mp3quran.net/m_arkani/"
+  },
+  {
+    "id": 171,
+    "name": "محمد خليل القارئ",
+    "style": "حفص عن عاصم",
+    "server": "https://server8.mp3quran.net/m_qari/"
+  },
+  {
+    "id": 172,
+    "name": "رامي الدعيس",
+    "style": "حفص عن عاصم",
+    "server": "https://server6.mp3quran.net/rami/"
+  },
+  {
+    "id": 173,
+    "name": "هزاع البلوشي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/hazza/"
+  },
+  {
+    "id": 174,
+    "name": "عبدالرحمن الماجد",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/a_majed/"
+  },
+  {
+    "id": 175,
+    "name": "مروان العكري",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/m_akri/Rewayat-Qalon-A-n-Nafi/"
+  },
+  {
+    "id": 176,
+    "name": "سلمان العتيبي",
+    "style": "حفص عن عاصم",
+    "server": "https://server11.mp3quran.net/salman/"
+  },
+  {
+    "id": 177,
+    "name": "محمد رفعت",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/refat/"
+  },
+  {
+    "id": 178,
+    "name": "عبدالله الموسى",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/mousa/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 179,
+    "name": "عبدالله الخلف",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/khalf/"
+  },
+  {
+    "id": 180,
+    "name": "منصور السالمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/mansor/"
+  },
+  {
+    "id": 181,
+    "name": "صلاح مصلي",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/musali/"
+  },
+  {
+    "id": 182,
+    "name": "خالد الشارخ",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/sharekh/"
+  },
+  {
+    "id": 183,
+    "name": "ناصر العصفور",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/alosfor/"
+  },
+  {
+    "id": 184,
+    "name": "محمد البخيت",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/bukheet/"
+  },
+  {
+    "id": 185,
+    "name": "ناصر الماجد",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/nasser_almajed/"
+  },
+  {
+    "id": 186,
+    "name": "أحمد السويلم",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/swlim/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 187,
+    "name": "إسلام صبحي",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/islam/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 188,
+    "name": "بدر التركي",
+    "style": "حفص عن عاصم",
+    "server": "https://server10.mp3quran.net/bader/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 189,
+    "name": "هيثم الجدعاني",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/hitham/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 190,
+    "name": "أحمد خليل شاهين",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/shaheen/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 191,
+    "name": "سعد المقرن",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/saad/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 192,
+    "name": "أحمد النفيس",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/nufais/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 193,
+    "name": "عمر الدريويز",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/darweez/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 194,
+    "name": "عبدالعزيز العسيري",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/abdulazizasiri/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 195,
+    "name": "يونس اسويلص",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/souilass/Rewayat-Warsh-A-n-Nafi/"
+  },
+  {
+    "id": 196,
+    "name": "أحمد ديبان",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/deban/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 197,
+    "name": "عبدالله كامل",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/kamel/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 198,
+    "name": "بيشه وا قادر الكردي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/peshawa/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 199,
+    "name": "نذير المالكي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net//nathier/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 200,
+    "name": "عكاشة كميني",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/okasha/Rewayat-AlDorai-A-n-Al-Kisa-ai/"
+  },
+  {
+    "id": 201,
+    "name": "هيثم الدخين",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/h_dukhain/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 202,
+    "name": "محمد أبو سنينة",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/sneineh/Rewayat-Qalon-A-n-Nafi/"
+  },
+  {
+    "id": 203,
+    "name": "محمد الأمين قنيوة",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/qeniwa/Rewayat-Qalon-A-n-Nafi/"
+  },
+  {
+    "id": 204,
+    "name": "محمود عبدالحكم",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/m_abdelhakam/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 205,
+    "name": "أحمد عيسى المعصراوي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_maasaraawi/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 206,
+    "name": "إبراهيم كشيدان",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/i_kshidan/Rewayat-Qalon-A-n-Nafi/"
+  },
+  {
+    "id": 207,
+    "name": "هاشم أبو دلال",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/h_abudalal/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 208,
+    "name": "فؤاد الخامري",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/f_khamery/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 209,
+    "name": "سيد أحمد هاشمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/s_hashemi/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 210,
+    "name": "خالد كريم محمدي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/kh_mohammadi/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 211,
+    "name": "مال الله عبدالرحمن الجابر",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/mal-allah_jaber/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 212,
+    "name": "سلمان الصديق",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/s_sadeiq/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 213,
+    "name": "حسن صالح",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/h_saleh/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 214,
+    "name": "عبدالرحمن الشحات",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_alshahhat/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 215,
+    "name": "عيسى عمر سناكو",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/i_sanankoua/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 216,
+    "name": "هارون بقائي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/h_baqai/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 217,
+    "name": "صالح القريشي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/s_alquraishi/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 218,
+    "name": "صالح الشمراني",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/shamrani/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 219,
+    "name": "فيصل الهاجري",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/f_hajry/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 220,
+    "name": "أنس العمادي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_alemadi/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 221,
+    "name": "عبدالملك العسكر",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_alaskar/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 222,
+    "name": "عبدالكريم الحازمي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_alhazmi/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 223,
+    "name": "هشام الهراز",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/H-Lharraz/Rewayat-Warsh-A-n-Nafi/"
+  },
+  {
+    "id": 224,
+    "name": "عبدالله المشعل",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a-almishal/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 225,
+    "name": "عبدالعزيز سحيم",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_sheim/Rewayat-Warsh-A-n-Nafi/"
+  },
+  {
+    "id": 226,
+    "name": "عبدالله القرافي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/a_alqrafi/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 227,
+    "name": "عبدالبديع غيلان",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/A-Ghailan/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 228,
+    "name": "محمد برهجي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/M_Burhaji/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 229,
+    "name": "يوسف العيدروس",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/Y_ALaidroos/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 230,
+    "name": "حسن الدغريري",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/H-Aldaghriri/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 231,
+    "name": "محمد الفقيه",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/M_Alfaqih/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 232,
+    "name": "جنيد آدم عبدالله",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/J-Abdullah/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 233,
+    "name": "خالد الزيادي",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/K-Alzadi/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 234,
+    "name": "الوليد الشمسان",
+    "style": "حفص عن عاصم",
+    "server": "https://server14.mp3quran.net/shamsan/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 235,
+    "name": "إبراهيم الشهري",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/Ibrahim-Al-Shahri/Rewayat-Hafs-A-n-Assem/"
+  },
+  {
+    "id": 236,
+    "name": "عبدالرحمن بن عبدالرزاق البدر",
+    "style": "حفص عن عاصم",
+    "server": "https://server16.mp3quran.net/A-AlBadr/Rewayat-Hafs-A-n-Assem/"
+  }];
+        const surahNames = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
+            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
+            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
+            "المسد", "الإخلاص", "الفلق", "الناس"
+        ];
+        const surahsData = surahNames.map((name, index) => ({ id: index + 1, name: name }));
+
+        let state = {
+            currentTab: 'reciters', reciter: recitersData[0] || {id: 109, name: "مشاري العفاسي", server: "https://server8.mp3quran.net/afs/"},
+            surahId: 1, isPlaying: false, favorites: JSON.parse(localStorage.getItem('quran_favs')) || [],
+            theme: localStorage.getItem('theme') || 'light', currentPage: 1, itemsPerPage: 20,
+            playbackMode: 'list', // 'list' | 'repeat'
+            savedTracks: JSON.parse(localStorage.getItem('quran_saved_tracks')) || []
+        };
+
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const progressBar = document.getElementById('progressBar'); // New input range
+        const searchInput = document.getElementById('searchInput');
+        const recitersGrid = document.getElementById('recitersGrid');
+        const surahsList = document.getElementById('surahsList');
+        const modeBtn = document.getElementById('modeBtn');
+        const randomBtn = document.getElementById('randomBtn');
+
+        function init() {
+            setTheme(state.theme);
+            renderView();
+            setupEventListeners();
+        }
+
+        function renderView() {
+            const term = searchInput.value.toLowerCase();
+            let list = [];
+
+            if (state.currentTab === 'reciters') {
+                list = recitersData.filter(r => r.name.includes(term));
+                document.getElementById('pagination').style.display = 'flex';
+                renderPaginatedReciters(list);
+            } else if (state.currentTab === 'surahs') {
+                list = surahsData.filter(s => s.name.includes(term));
+                document.getElementById('pagination').style.display = 'none';
+                renderSurahs(list);
+            } else if (state.currentTab === 'favorites') {
+                list = recitersData.filter(r => state.favorites.includes(r.id) && r.name.includes(term));
+                document.getElementById('pagination').style.display = 'none';
+                renderReciters(list);
+            }else if (state.currentTab === 'saved_tracks') {
+    // بيفلتر باسم القارئ أو السورة
+    list = state.savedTracks.filter(t => {
+        const rName = recitersData.find(r => r.id === t.reciterId)?.name || '';
+        const sName = surahsData.find(s => s.id === t.surahId)?.name || '';
+        return rName.includes(term) || sName.includes(term);
+    });
+    document.getElementById('pagination').style.display = 'none';
+    renderSavedTracks(list);
+}
+        }
+
+        function renderPaginatedReciters(list) {
+            const totalPages = Math.ceil(list.length / state.itemsPerPage);
+            state.currentPage = Math.min(state.currentPage, totalPages || 1);
+            const start = (state.currentPage - 1) * state.itemsPerPage;
+            const paginatedList = list.slice(start, start + state.itemsPerPage);
+            
+            renderReciters(paginatedList);
+            document.getElementById('pageInfo').textContent = `صفحة ${state.currentPage} من ${totalPages || 1}`;
+            document.getElementById('prevPage').disabled = state.currentPage === 1;
+            document.getElementById('nextPage').disabled = state.currentPage === totalPages || totalPages === 0;
+        }
+
+        function renderReciters(list) {
+            recitersGrid.innerHTML = list.length ? '' : '<p style="text-align:center; width:100%; color:var(--text-secondary)">لا توجد نتائج</p>';
+            list.forEach(r => {
+                const card = document.createElement('div');
+                card.className = `card ${r.id === state.reciter.id ? 'active' : ''}`;
+                card.onclick = (e) => { if(!e.target.closest('.fav-btn')) loadTrack(r, state.surahId); };
+                card.innerHTML = `<div class="card-icon"><i class="fas fa-microphone-alt"></i></div><div class="card-info"><h3 class="card-title">${r.name}</h3><p class="card-meta">${r.style}</p></div><button class="fav-btn ${state.favorites.includes(r.id) ? 'is-fav' : ''}" onclick="toggleFav(${r.id}, this)"><i class="${state.favorites.includes(r.id) ? 'fas' : 'far'} fa-heart"></i></button>`;
+                recitersGrid.appendChild(card);
+            });
+        }
+
+        function renderSurahs(list) {
+            surahsList.innerHTML = '';
+            list.forEach(s => {
+                const item = document.createElement('div');
+                item.className = `surah-item ${s.id === state.surahId ? 'active' : ''}`;
+                item.onclick = () => loadTrack(state.reciter, s.id);
+                item.innerHTML = `<div class="surah-info"><div class="surah-number">${s.id}</div><span class="surah-name">سورة ${s.name}</span></div><i class="far fa-play-circle"></i>`;
+                surahsList.appendChild(item);
+            });
+        }
+
+        function loadTrack(reciter, surahId) {
+            state.reciter = reciter; state.surahId = surahId;
+            const paddedId = String(surahId).padStart(3, '0');
+            const surahName = surahsData.find(s => s.id === surahId).name;
+            audio.src = `${reciter.server}${paddedId}.mp3`;
+            audio.onerror = () => {
+                const toast = document.createElement('div');
+                toast.className = 'error-toast';
+                toast.innerText = 'عذراً، هذه السورة غير متوفرة حالياً من المصدر';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 4000); 
+                updateSaveTrackBtn();
+            };
+            document.getElementById('currentSurahName').textContent = `سورة ${surahsData.find(s => s.id === surahId).name}`;
+            document.getElementById('currentReciterName').textContent = reciter.name;
+            updateMediaSession(reciter.name, surahName);
+            highlightActive();
+            playAudio();
+            updateSaveTrackBtn();
+            // Optional: only scroll if on mobile to avoid jumping on desktop
+            if(window.innerWidth < 768) window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function playAudio() { audio.play().then(() => { state.isPlaying = true; updatePlayBtn(); }).catch(() => {}); }
+        function togglePlay() { if(state.isPlaying) audio.pause(); else playAudio(); state.isPlaying = !state.isPlaying; updatePlayBtn(); }
+        function updatePlayBtn() { 
+            // Update icon only, class handled in CSS
+            playBtn.innerHTML = state.isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play" style="margin-right: -4px;"></i>'; 
+        }
+        
+        function highlightActive() {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.surah-item').forEach(s => s.classList.remove('active'));
+            renderView(); // Re-render to update active class in grid
+        }
+
+        window.toggleFav = function(id, btn) {
+            const idx = state.favorites.indexOf(id);
+            if (idx === -1) state.favorites.push(id); else state.favorites.splice(idx, 1);
+            localStorage.setItem('quran_favs', JSON.stringify(state.favorites));
+            renderView();
+        };
+
+
+        // دالة حفظ أو إزالة التلاوة من المشغل
+function toggleSavedTrack() {
+    const index = state.savedTracks.findIndex(t => t.reciterId === state.reciter.id && t.surahId === state.surahId);
+    
+    if (index === -1) {
+        state.savedTracks.push({ reciterId: state.reciter.id, surahId: state.surahId });
+    } else {
+        state.savedTracks.splice(index, 1);
+    }
+    
+    localStorage.setItem('quran_saved_tracks', JSON.stringify(state.savedTracks));
+    updateSaveTrackBtn();
+    
+    if(state.currentTab === 'saved_tracks') renderView();
+}
+
+// دالة تحديث شكل زرار القلب في المشغل
+function updateSaveTrackBtn() {
+    const btn = document.getElementById('saveTrackBtn');
+    const isSaved = state.savedTracks.some(t => t.reciterId === state.reciter.id && t.surahId === state.surahId);
+    
+    if (isSaved) {
+        btn.innerHTML = '<i class="fas fa-heart"></i>';
+        btn.classList.add('is-saved');
+    } else {
+        btn.innerHTML = '<i class="far fa-heart"></i>';
+        btn.classList.remove('is-saved');
+    }
+}
+
+// دالة التحميل
+function downloadTrack() {
+    const paddedId = String(state.surahId).padStart(3, '0');
+    const url = `${state.reciter.server}${paddedId}.mp3`;
+    
+    // بنعمل لينك وهمي ونضغط عليه برمجياً عشان نحمل الملف
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = "_blank"; // عشان لو المتصفح معملش تحميل مباشر يفتحها في تابة جديدة
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// دالة عرض التلاوات في التاب الجديد
+function renderSavedTracks(list) {
+    const grid = document.getElementById('savedTracksGrid');
+    grid.innerHTML = list.length ? '' : '<p style="text-align:center; width:100%; color:var(--text-secondary)">لا توجد تلاوات محفوظة</p>';
+    
+    list.forEach(t => {
+        const reciter = recitersData.find(r => r.id === t.reciterId);
+        const surah = surahsData.find(s => s.id === t.surahId);
+        
+        if(!reciter || !surah) return;
+        
+        const card = document.createElement('div');
+        card.className = `card ${(t.reciterId === state.reciter.id && t.surahId === state.surahId) ? 'active' : ''}`;
+        card.onclick = (e) => { 
+            if(!e.target.closest('.delete-btn')) loadTrack(reciter, surah.id); 
+        };
+        
+        card.innerHTML = `
+            <div class="card-icon"><i class="fas fa-play"></i></div>
+            <div class="card-info">
+                <h3 class="card-title">سورة ${surah.name}</h3>
+                <p class="card-meta">${reciter.name}</p>
+            </div>
+            <button class="fav-btn delete-btn" onclick="removeSavedTrack(${t.reciterId}, ${t.surahId}, event)" title="حذف من تلاواتي">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// دالة حذف التلاوة من الكارد نفسه
+window.removeSavedTrack = function(reciterId, surahId, event) {
+    event.stopPropagation(); // عشان يمنع تشغيل التلاوة لما تدوس على الحذف
+    state.savedTracks = state.savedTracks.filter(t => !(t.reciterId === reciterId && t.surahId === surahId));
+    localStorage.setItem('quran_saved_tracks', JSON.stringify(state.savedTracks));
+    updateSaveTrackBtn();
+    renderView();
+};
+
+        // --- NEW FUNCTIONS FOR PLAYER LOGIC ---
+
+        function toggleMode() {
+            if (state.playbackMode === 'list') {
+                state.playbackMode = 'repeat';
+                modeBtn.innerHTML = '<i class="fas fa-redo"></i>';
+                modeBtn.classList.add('active-mode');
+                modeBtn.title = 'إعادة السورة الحالية';
+            } else {
+                state.playbackMode = 'list';
+                modeBtn.innerHTML = '<i class="fas fa-list-ol"></i>';
+                modeBtn.classList.remove('active-mode');
+                modeBtn.title = 'تشغيل تتابعي';
+            }
+        }
+
+        function playRandom() {
+            const randomReciter = recitersData[Math.floor(Math.random() * recitersData.length)];
+            const randomSurahId = Math.floor(Math.random() * 114) + 1;
+            loadTrack(randomReciter, randomSurahId);
+        }
+
+        function onTrackEnded() {
+            if (state.playbackMode === 'repeat') {
+                audio.currentTime = 0;
+                playAudio();
+            } else {
+                // Next Track
+                if (state.surahId < 114) loadTrack(state.reciter, state.surahId + 1);
+            }
+        }
+
+        function setupEventListeners() {
+            playBtn.onclick = togglePlay;
+            modeBtn.onclick = toggleMode;
+            randomBtn.onclick = playRandom;
+
+            document.getElementById('themeBtn').onclick = () => setTheme(state.theme === 'light' ? 'dark' : 'light');
+            document.getElementById('nextBtn').onclick = () => { if(state.surahId > 1) loadTrack(state.reciter, state.surahId - 1); };
+            document.getElementById('prevBtn').onclick = () => { if(state.surahId < 114) loadTrack(state.reciter, state.surahId + 1); };
+            
+            document.getElementById('nextPage').onclick = () => { state.currentPage++; renderView(); };
+            document.getElementById('prevPage').onclick = () => { state.currentPage--; renderView(); };
+            document.getElementById('saveTrackBtn').onclick = toggleSavedTrack;
+            document.getElementById('downloadBtn').onclick = downloadTrack;
+            searchInput.oninput = () => { state.currentPage = 1; renderView(); };
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    state.currentTab = btn.dataset.tab;
+                    state.currentPage = 1;
+                    
+                    const sInput = document.getElementById('searchInput');
+                    sInput.value = "";
+                    if (state.currentTab === 'reciters') sInput.placeholder = "بحث عن قارئ...";
+                    else if (state.currentTab === 'surahs') sInput.placeholder = "بحث عن سورة...";
+                    else if (state.currentTab === 'favorites') sInput.placeholder = "بحث في المفضلة...";
+                    else if (state.currentTab === 'saved_tracks') sInput.placeholder = "بحث عن تلاوة (سورة أو قارئ)..."; // 👈 جديد
+                    document.getElementById('recitersSection').style.display = (state.currentTab === 'reciters' || state.currentTab === 'favorites') ? 'block' : 'none';
+                    document.getElementById('surahsSection').style.display = state.currentTab === 'surahs' ? 'block' : 'none';
+                    document.getElementById('savedTracksSection').style.display = state.currentTab === 'saved_tracks' ? 'block' : 'none'; // 👈 جديد
+                    renderView();
+                };
+            });
+            // Keyboard controls
+    document.addEventListener('keydown', function(event) {
+        // Crucial: Prevent keyboard shortcuts from firing if the user is typing in an input field (like the search box)
+        if (event.target.tagName.toLowerCase() === 'input') return;
+
+        // 1. Play/Pause using Spacebar
+        if (event.code === 'Space') {
+            event.preventDefault(); // Prevents the default browser behavior (scrolling down)
+            togglePlay(); // Call your play/pause toggle function
+        }
+        
+        // 2. Increase volume using Up Arrow
+        else if (event.code === 'ArrowUp') {
+            event.preventDefault(); // Prevents the default browser behavior (scrolling)
+            // Audio volume ranges from 0 to 1, so we increase by 0.1 up to a max of 1
+            audio.volume = Math.min(1, audio.volume + 0.1); 
+        }
+        
+        // 3. Decrease volume using Down Arrow
+        else if (event.code === 'ArrowDown') {
+            event.preventDefault(); // Prevents the default browser behavior (scrolling)
+            // Decrease by 0.1 down to a min of 0
+            audio.volume = Math.max(0, audio.volume - 0.1); 
+        }
+    });
+            // Audio Events
+            audio.onended = onTrackEnded;
+            
+            audio.ontimeupdate = () => {
+                if(isNaN(audio.duration)) return;
+                const pct = (audio.currentTime / audio.duration) * 100;
+                
+                // Update Range Input Value
+                progressBar.value = pct;
+                
+                // Update Gradient Visual (Matches React Logic)
+                const isDark = state.theme === 'dark';
+                const baseColor = isDark ? '#2A3836' : '#E0DCD5';
+                const activeColor = '#D4AF37';
+                
+                // Note: In RTL context, "to left" fills from Right to Left. 
+                // We use standard linear-gradient logic, but applying it to the slider background.
+                progressBar.style.background = `linear-gradient(to left, ${activeColor} ${pct}%, ${baseColor} ${pct}%)`;
+
+                document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
+                document.getElementById('duration').textContent = formatTime(audio.duration);
+            };
+
+            // Seek logic
+            progressBar.oninput = (e) => {
+                const val = e.target.value;
+                audio.currentTime = (val / 100) * audio.duration;
+            };
+
+            // ربط زراير إشعار الموبايل بالمشغل بتاعنا
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', () => {
+            playAudio();
+        });
+        
+        navigator.mediaSession.setActionHandler('pause', () => {
+            audio.pause();
+            state.isPlaying = false;
+            updatePlayBtn();
+        });
+        
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+            if(state.surahId > 1) loadTrack(state.reciter, state.surahId - 1);
+        });
+        
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+            if(state.surahId < 114) loadTrack(state.reciter, state.surahId + 1);
+        });
+    }
+        }
+
+        function setTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            state.theme = t; localStorage.setItem('theme', t);
+            document.getElementById('themeBtn').innerHTML = t === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            
+            // Trigger timeupdate to refresh slider color immediately on theme change
+            if(audio.duration) audio.ontimeupdate();
+        }
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60); const sec = Math.floor(s % 60);
+            return `${m < 10 ? '0' : ''}${m}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        // دالة لتحديث بيانات الإشعار في الموبايل
+function updateMediaSession(reciterName, surahName) {
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: `سورة ${surahName}`,
+            artist: reciterName,
+            album: 'القرآن الكريم',
+            artwork: [
+                // يفضل تحط رابط لصورة (لوجو التطبيق) بصيغة PNG أو JPG عشان تظهر في الإشعار
+                { src: 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png', sizes: '512x512', type: 'image/png' }
+            ]
+        });
+    }
+}
+
+        init();
+    </script>
+</body>
+</html>
